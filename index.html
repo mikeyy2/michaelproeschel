@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link rel="stylesheet" href="./style.css">
+      <link rel="icon" type="image/x-icon" href="./images/favicon.ico">
+      <title>Michael Proeschel - Portfolio</title>
+   </head>
+   <body>
+      <section id="about">
+         <div class="container">
+            <img src="./images/profile.jpg" alt="Profile Photo">
+            <h1>Michael Proeschel</h1>
+            <p>I am a student at Iowa State University pursuing my bachelor of science in software engineering. I am a member of the fraternity Phi Gamma Delta and am very involved on campus outside of this. I am in the AI and ML club, Computer Science and Software Engineering Club, and the Weight Club.</p>
+         </div>
+      </section>
+
+      <section id="projects">
+         <div class="container">
+            <h2>Projects</h2>
+            <div class="project">
+               <img class="project-image" src="./images/project1.png" alt="Project 1">
+               <h3 class="white"><a href="https://drewsmobiledetailing.co/?fbclid=IwY2xjawE5rlxleHRuA2FlbQIxMAABHW9QuWodpCH-eH1jNwSx8-hG0q7vWVDPcLdMqA0Wy1rcTQtou4Qvq7f1dw_aem_2TA8CNfAFRAEJOTFn8AT2g" target="_blank" rel="noopener noreferrer">Drew's Mobile Detailing</a></h3>
+               <p>I made a website for a small business owner in order to help grow awareness of what he does and to increase his customer base. I used HTML, CSS, and JavaScript to create the website.</p>
+               <img class="project-image" src="./images/project2.png" alt="Project 2">
+               <h3 class="white"><a href="https://brianccwork.github.io/Calcly/" target="_blank" rel="noopener noreferrer">Calcly Project</a></h3>
+               <p>Made a web page for students of Iowa State University to have access to an AI that is trained on Iowa State Maths from Calc 1 to Calc 3.</p>
+            </div>
+
+            <!-- PDF Button and Viewer -->
+            <div class="pdf-container">
+               <div class="button-container">
+                  <button class="button2" onclick="togglePDF()">Resume</button>
+               </div>
+               <iframe id="pdfViewer" src="./documents/MichaelProeschel_S25.pdf"></iframe>
+            </div>
+         </div>
+      </section>
+
+      <section id="contact">
+         <div class="container">
+             <h2>Contact Me</h2>
+             <ul class="contact-list">
+                 <li><strong>Email:</strong> <a href="mailto:mdp2@iastate.edu">mikeypro24@gmail.com</a></li>
+                 <li><strong>LinkedIn:</strong> <a href="https://www.linkedin.com/in/michael-proeschel-852565263/" target="_blank" rel="noopener noreferrer">linkedin.com/in/michael-proeschel</a></li>
+                 <li><strong>Phone:</strong> <a href="tel:+18476240240">847-624-0240</a></li>
+             </ul>
+         </div>
+      </section>
+
+      <footer>
+         <p>Thank You!</p>
+      </footer>
+      <script src="script.js"></script>
+   </body>
+</html>
