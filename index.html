@@ -1,82 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-   <meta charset="UTF-8" />
-   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-   <link rel="stylesheet" href="./style.css" />
-   <link rel="icon" type="image/x-icon" href="./images/favicon.ico" />
-   <title>Michael Proeschel - Portfolio</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Michael Proeschel – Portfolio</title>
+  <link rel="icon" type="image/x-icon" href="./images/favicon.ico" />
+  <link rel="stylesheet" href="style.css" />
 </head>
-
 <body>
-   <section id="about">
-      <div class="about-container">
-         <img src="./images/profile.jpg" alt="Profile Photo" class="profile-img" />
-         <div class="about-text">
-            <h1>Michael Proeschel</h1>
-            <p>
-               I am a student at Iowa State University pursuing my bachelor of
-               science in software engineering. I am a member of the fraternity Phi
-               Gamma Delta and am very involved on campus outside of this. I am in
-               the AI and ML club, Computer Science and Software Engineering Club,
-               and the Weight Club.
-            </p>
-         </div>
+  <main class="wrap">
+    <section class="hero">
+
+      <div>
+        <div class="hi">Hey there! My name is</div>
+        <h1 class="title">Michael Proeschel.</h1>
+
+        <p class="lead">
+          I'm a Software Engineering student at
+          <a href="https://se.iastate.edu/" target="_blank"><span class="pill"><span class="em">🎓</span> Iowa State University</span></a>
+          and currently seeking an internship for Summer 2026. I'm interested in everything software, AI/ML, and going to the gym. Contact me below!
+        </p>
+
+        <div class="contacts" aria-label="Contact links">
+          <div class="contact">
+            <span class="ic" aria-hidden="true">in</span>
+            <a href="https://www.linkedin.com/in/michael-proeschel/" target="_blank" rel="noopener">linkedin.com/michaelproeschel</a>
+          </div>
+
+          <div class="contact">
+            <span class="ic" aria-hidden="true">gh</span>
+            <a href="https://github.com/mikeyy2" target="_blank" rel="noopener">github.com/mikeyy2</a>
+          </div>
+
+          <div class="contact">
+            <span class="ic" aria-hidden="true">@</span>
+            <a id="emailLink" href="mailto:mikeypro24@gmail.com">mikeypro24@gmail.com</a>
+            <button class="copy" data-copy="mproe@iastate.edu" aria-label="Copy email">Copy</button>
+          </div>
+
+          <div class="contact">
+            <span class="ic" aria-hidden="true">☎︎</span>
+            <a href="tel:+1-847-624-0240">+1 (847)-624-0240</a>
+            <button class="copy" data-copy="+18476240240" aria-label="Copy phone">Copy</button>
+          </div>
+        </div>
       </div>
-   </section>
+    </section>
+    <div class="spacer"></div>
+  </main>
 
-   <section id="projects">
-      <div class="container">
-         <h2>Projects</h2>
-
-         <div class="project-grid">
-            <div class="project-card">
-               <img class="project-image" src="./images/project1.png" alt="Project 1" />
-               <h3>
-                  <a href="https://drewsmobiledetailing.co/" target="_blank" style="color: white;"">Drew's Mobile Detailing</a>
-               </h3>
-               <p>Business website built with HTML/CSS/JS</p>
-            </div>
-
-            <div class="project-card">
-               <img class="project-image" src="./images/project2.png" alt="Project 2" />
-               <h3>
-                  <a href="https://brianccwork.github.io/Calcly/" target="_blank" style="color: white;">Calcly</a>
-               </h3>
-               <p>AI study helper for ISU Calculus students</p>
-            </div>
-
-            <div class="project-card">
-               <img class="project-image" src="./images/project3.png" alt="Project 3" />
-               <h3>
-                  <a href="https://github.com/mikeyy2/stock-sight" target="_blank" style="color: white;">StockSight</a>
-               </h3>
-               <p>Stock price prediction AI model</p>
-            </div>
-            <div class="project-card">
-               <img class="project-image" src="./images/project4.png" alt="Project 4" />
-               <h3>
-                  <a href="https://www.youtube.com/watch?v=Dg7vKsf-yFY" target="_blank" style="color: white;">DSPLN</a>
-               </h3>
-               <p>AI study helper for ISU Calculus students.</p>
-            </div>
-         </div>
-
-         <!-- Resume PDF Button -->
-         <div class="pdf-container">
-            <div class="button-container">
-               <button class="button2" onclick="togglePDF()">Resume</button>
-            </div>
-            <iframe id="pdfViewer" src="./documents/Michael_Proeschel_SM25.pdf"></iframe>
-         </div>
-      </div>
-   </section>
-
-   <footer>
-      <p>Thank You!</p>
-   </footer>
-   <script src="script.js"></script>
+  <script src="script.js"></script>
 </body>
-
 </html>
