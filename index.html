@@ -1,54 +1,86 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Michael Proeschel - Portfolio</title>
-  <link rel="icon" type="image/x-icon" href="./images/favicon.ico" />
-  <link rel="stylesheet" href="./style.css" />
-</head>
-<body>
-  <main class="wrap">
-    <section class="hero">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Michael Proeschel - Portfolio</title>
+    <link rel="icon" type="image/x-icon" href="./images/favicon.ico" />
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <main class="wrap">
+      <section class="hero">
+        <div>
+          <div class="hi">Hey there! My name is</div>
+          <h1 class="title">Michael Proeschel.</h1>
+          <p class="lead">
+            I'm an App Dev Consultant Intern at
+            <a href="https://rsmus.com" target="_blank" class="pill-button">
+              <img src="/michaelproeschel/images/rsmm.png" alt="RSM Logo" />
+            </a>
+             and a Software Engineering student at
+            <a href="https://se.iastate.edu/" target="_blank"
+              ><span class="pill"
+                ><span class="em">🎓</span> Iowa State University</span
+              ></a
+            >
+            I'm interested
+            in everything software and AI/ML. In my free time you can find me
+            working out. Contact me below!
+          </p>
 
-      <div>
-        <div class="hi">Hey there! My name is</div>
-        <h1 class="title">Michael Proeschel.</h1>
+          <div class="contacts" aria-label="Contact links">
+            <div class="contact">
+              <span class="ic" aria-hidden="true">in</span>
+              <a
+                href="https://www.linkedin.com/in/michael-proeschel/"
+                target="_blank"
+                rel="noopener"
+                >linkedin.com/michaelproeschel</a
+              >
+            </div>
 
-        <p class="lead">
-          I'm a Software Engineering student at
-          <a href="https://se.iastate.edu/" target="_blank"><span class="pill"><span class="em">🎓</span> Iowa State University</span></a>
-          and currently seeking an internship for Summer 2026. I'm interested in everything software and AI/ML. In my free time you can find me working out. Contact me below!
-        </p>
+            <div class="contact">
+              <span class="ic" aria-hidden="true">gh</span>
+              <a
+                href="https://github.com/mikeyy2"
+                target="_blank"
+                rel="noopener"
+                >github.com/mikeyy2</a
+              >
+            </div>
 
-        <div class="contacts" aria-label="Contact links">
-          <div class="contact">
-            <span class="ic" aria-hidden="true">in</span>
-            <a href="https://www.linkedin.com/in/michael-proeschel/" target="_blank" rel="noopener">linkedin.com/michaelproeschel</a>
-          </div>
+            <div class="contact">
+              <span class="ic" aria-hidden="true">@</span>
+              <a id="emailLink" href="mailto:mikeypro24@gmail.com"
+                >mikeypro24@gmail.com</a
+              >
+              <button
+                class="copy"
+                data-copy="mproe@iastate.edu"
+                aria-label="Copy email"
+              >
+                Copy
+              </button>
+            </div>
 
-          <div class="contact">
-            <span class="ic" aria-hidden="true">gh</span>
-            <a href="https://github.com/mikeyy2" target="_blank" rel="noopener">github.com/mikeyy2</a>
-          </div>
-
-          <div class="contact">
-            <span class="ic" aria-hidden="true">@</span>
-            <a id="emailLink" href="mailto:mikeypro24@gmail.com">mikeypro24@gmail.com</a>
-            <button class="copy" data-copy="mproe@iastate.edu" aria-label="Copy email">Copy</button>
-          </div>
-
-          <div class="contact">
-            <span class="ic" aria-hidden="true">☎︎</span>
-            <a href="tel:+1-847-624-0240">+1 (847)-624-0240</a>
-            <button class="copy" data-copy="+18476240240" aria-label="Copy phone">Copy</button>
+            <div class="contact">
+              <span class="ic" aria-hidden="true">☎︎</span>
+              <a href="tel:+1-847-624-0240">+1 (847)-624-0240</a>
+              <button
+                class="copy"
+                data-copy="+18476240240"
+                aria-label="Copy phone"
+              >
+                Copy
+              </button>
+            </div>
           </div>
         </div>
-      </div>
-    </section>
-    <div class="spacer"></div>
-  </main>
+      </section>
+      <div class="spacer"></div>
+    </main>
 
-  <script src="script.js"></script>
-</body>
+    <script src="script.js"></script>
+  </body>
 </html>
