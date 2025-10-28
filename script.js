@@ -22,7 +22,6 @@
         setTempLabel(btn, 'Copied!');
       } catch (err) {
         console.error('Clipboard error:', err);
-        setTempLabel(btn, 'Failed');
 
         const ta = document.createElement('textarea');
         ta.value = value;
