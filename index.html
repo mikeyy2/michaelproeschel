@@ -2,85 +2,1348 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Michael Proeschel - Portfolio</title>
-    <link rel="icon" type="image/x-icon" href="./images/favicon.ico" />
-    <link rel="stylesheet" href="./style.css" />
-  </head>
-  <body>
-    <main class="wrap">
-      <section class="hero">
-        <div>
-          <div class="hi">Hey there! My name is</div>
-          <h1 class="title">Michael Proeschel.</h1>
-          <p class="lead">
-            I'm an App Dev Consultant Intern at
-            <a href="https://rsmus.com" target="_blank" class="pill-button">
-              <img src="images/rsmm.png" alt="RSM Logo" />
-            </a>
-             and a Software Engineering student at
-            <a href="https://se.iastate.edu/" target="_blank"
-              ><span class="pill"
-                ><span class="em">🎓</span> Iowa State University</span
-              ></a
-            >
-            I'm interested
-            in everything software and AI/ML. In my free time you can find me
-            working out. Contact me below!
-          </p>
+    <title>Michael Proeschel</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-          <div class="contacts" aria-label="Contact links">
-            <div class="contact">
-              <span class="ic" aria-hidden="true">in</span>
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: [
+                "system-ui",
+                "ui-sans-serif",
+                "-apple-system",
+                "BlinkMacSystemFont",
+                "sans-serif",
+              ],
+              mono: [
+                "ui-monospace",
+                "SFMono-Regular",
+                "Menlo",
+                "Monaco",
+                "Consolas",
+                "monospace",
+              ],
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      /* Keep Biltmore course dark in light mode (remove the "white fog") */
+      body.theme-light .caddie-course {
+        background-image: linear-gradient(
+          to top,
+          #a7f3d0 0%,
+          /* soft green at bottom */ #ecfdf5 40%,
+          /* very light green mid */ #ffffff 100% /* white at top */
+        );
+        border-color: #e5e7eb;
+        /* match other light cards */
+      }
+
+      /* Contact icons: fix light-mode hover so they don't disappear */
+      body.theme-light #tab-contact .group:hover span.rounded-full {
+        background-color: #111827;
+        /* dark circle on hover */
+        border-color: #111827;
+      }
+
+      /* keep the glyphs readable on that dark circle */
+      body.theme-light #tab-contact .group:hover svg,
+      body.theme-light #tab-contact .group:hover span.text-neutral-300 {
+        color: #ffffff;
+        fill: #ffffff;
+      }
+
+      /* label under the icon stays dark until hover, then switches to dark text on light bg */
+      body.theme-light #tab-contact .group span.text-xs.text-neutral-400 {
+        color: #111827;
+      }
+
+      body.theme-light #tab-contact .group:hover span.text-xs.text-neutral-400 {
+        color: #111827;
+        /* keep it dark; you can change to white if you prefer */
+      }
+
+      /* Base transition for all tabs */
+      .tab-button {
+        transition: background-color 0.15s ease-out, color 0.15s ease-out;
+      }
+
+      /* Dark mode hover for inactive tabs */
+      body:not(.theme-light) .tab-button:not(.bg-white):hover {
+        background-color: #0b1120;
+        /* slate-950-ish */
+        color: #e5e7eb;
+        /* neutral-200 */
+      }
+
+      /* Light mode hover for inactive tabs */
+      body.theme-light .tab-button:not(.bg-white):hover {
+        background-color: #e5e7eb;
+        /* neutral-200 */
+        color: #111827;
+        /* slate-900 */
+      }
+
+      /* Drew's "Today · Friday" pill – light mode */
+      body.theme-light .dmd-today-pill {
+        background-color: #ffffff;
+        /* white pill */
+        border-color: #e5e7eb;
+      }
+
+      body.theme-light .dmd-today-text {
+        color: #111827;
+        /* dark text on light pill */
+      }
+
+      /* Drew's – day-of-week pills */
+      .dmd-day {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 1.5rem;
+        /* ~h-6 */
+        border-radius: 0.5rem;
+        /* rounded-lg */
+        border: 1px solid #1f2933;
+        /* neutral-800-ish */
+        background-color: #020617;
+        /* near-black */
+        color: #9ca3af;
+        /* neutral-400 */
+        cursor: pointer;
+        transition: background-color 0.15s ease-out, border-color 0.15s ease-out,
+          color 0.15s ease-out, box-shadow 0.15s ease-out;
+        padding-inline: 0.5rem;
+      }
+
+      .dmd-day:hover {
+        background-color: #111827;
+        /* slate-900-ish */
+        border-color: #4b5563;
+        /* slate-600-ish */
+        color: #e5e7eb;
+        /* neutral-200 */
+      }
+
+      .dmd-day-active {
+        border-color: #34d399;
+        /* emerald-400 */
+        background-color: rgba(16, 185, 129, 0.16);
+        /* soft green fill */
+        color: #bbf7d0;
+        /* emerald-100 */
+        box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.35);
+      }
+
+      /* Light mode versions */
+      body.theme-light .dmd-day {
+        background-color: #f9fafb;
+        /* light grey */
+        border-color: #e5e7eb;
+        color: #4b5563;
+        /* slate-600 */
+      }
+
+      body.theme-light .dmd-day:hover {
+        background-color: #e5f6ff;
+        /* faint blue highlight */
+        border-color: #cbd5f5;
+        color: #111827;
+      }
+
+      body.theme-light .dmd-day-active {
+        background-color: #dcfce7;
+        /* emerald-100 */
+        border-color: #22c55e;
+        /* emerald-500 */
+        color: #166534;
+        /* emerald-800 */
+        box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.45);
+      }
+
+      .caddie-flag {
+        transform-origin: left center;
+        transform: rotate(-14deg);
+      }
+
+      .caddie-ball,
+      .caddie-ball-shadow,
+      .caddie-distance {
+        transform: translate3d(0, 0, 0);
+      }
+
+      /* animate when the card is hovered */
+      .group:hover .caddie-ball {
+        animation: caddie-roll 0.9s linear forwards;
+      }
+
+      .group:hover .caddie-ball-shadow {
+        animation: caddie-shadow 0.9s linear forwards;
+      }
+
+      .group:hover .caddie-distance {
+        animation: caddie-distance-fill 0.9s linear forwards;
+      }
+
+      /* simple, smooth arc to the hole */
+      @keyframes caddie-roll {
+        0% {
+          transform: translate3d(0, 0, 0);
+        }
+
+        100% {
+          transform: translate3d(135px, -4px, 0);
+        }
+      }
+
+      /* shadow follows underneath */
+      @keyframes caddie-shadow {
+        0% {
+          transform: translate3d(0, 0, 0) scaleX(1);
+        }
+
+        100% {
+          transform: translate3d(135px, 0, 0) scaleX(0.9);
+        }
+      }
+
+      /* distance bar fills once, left → right */
+      @keyframes caddie-distance-fill {
+        0% {
+          transform: translateX(-100%);
+        }
+
+        100% {
+          transform: translateX(0%);
+        }
+      }
+
+      /* Light mode adjustments for this card */
+      body.theme-light .experience-card .dmd-road {
+        background-color: #e5e7eb;
+        border-color: #d4d4d8;
+      }
+
+      body.theme-light .experience-card .dmd-centerline {
+        background-image: repeating-linear-gradient(
+          to right,
+          rgba(55, 65, 81, 0.9) 0,
+          rgba(55, 65, 81, 0.9) 10px,
+          transparent 10px,
+          transparent 18px
+        );
+      }
+
+      body.theme-light .experience-card .dmd-car > div:first-child {
+        background-image: linear-gradient(to right, #f3f4f6, #e5e7eb);
+        border-color: #9ca3af;
+      }
+
+      body.theme-light .experience-card .dmd-sparkle {
+        border-color: rgba(16, 185, 129, 0.7);
+      }
+
+      .stocksight-crosshair {
+        opacity: 0;
+        transition: opacity 0.12s ease-out;
+        pointer-events: none;
+      }
+
+      .stocksight-line {
+        transition: transform 0.15s ease-out;
+      }
+
+      /* Light theme overrides (dark remains the default) */
+      body.theme-light {
+        background-color: #f9fafb;
+        /* light gray */
+        color: #020617;
+        /* slate-950-ish */
+      }
+
+      body.theme-light .bg-black,
+      body.theme-light .bg-neutral-950 {
+        background-color: #ffffff;
+      }
+
+      body.theme-light .border-neutral-900,
+      body.theme-light .border-neutral-800,
+      body.theme-light .border-neutral-700 {
+        border-color: #e5e7eb;
+      }
+
+      body.theme-light .text-neutral-200,
+      body.theme-light .text-neutral-300,
+      body.theme-light .text-neutral-400,
+      body.theme-light .text-neutral-500 {
+        color: #111827;
+      }
+
+      /* Tabs look nicer in light mode */
+      body.theme-light .border-neutral-800.rounded-full {
+        border-color: #e5e7eb;
+        background-color: #f3f4f6;
+      }
+
+      /* Light mode styles for the toggle button itself */
+      body.theme-light #theme-toggle {
+        background-color: #e5e7eb;
+        color: #111827;
+        border-color: #d1d5db;
+      }
+
+      body.theme-light .bg-neutral-950\/80,
+      body.theme-light .bg-neutral-900 {
+        background-color: #ffffff;
+        /* inner “screens” / cards */
+      }
+
+      body.theme-light .border-neutral-800,
+      body.theme-light .border-neutral-900,
+      body.theme-light .border-neutral-700 {
+        border-color: #e5e7eb;
+        /* lighter borders (you may already have this) */
+      }
+
+      /* Optional: soften text color inside cards a bit */
+      body.theme-light .text-neutral-300,
+      body.theme-light .text-neutral-400,
+      body.theme-light .text-neutral-500 {
+        color: #111827;
+      }
+    </style>
+  </head>
+
+  <body class="min-h-screen bg-black text-white antialiased">
+    <button
+      id="theme-toggle"
+      class="fixed top-4 right-4 z-50 w-9 h-9 flex items-center justify-center border border-neutral-700 rounded-md bg-neutral-950 text-neutral-200 hover:border-white hover:text-white text-sm"
+      type="button"
+      aria-label="Toggle light mode"
+    >
+      ☀
+    </button>
+
+    <!-- HERO / TOP SECTION -->
+    <header class="min-h-[75vh] flex items-center">
+      <div class="w-full max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <p class="text-xs uppercase tracking-[0.25em] text-neutral-400 mb-3">
+          Software Engineering · AI
+        </p>
+
+        <h1 class="text-3xl sm:text-4xl md:text-5xl font-semibold mb-4">
+          Michael Proeschel
+        </h1>
+
+        <p
+          class="text-sm sm:text-base md:text-lg text-neutral-200 max-w-2xl leading-relaxed"
+        >
+          Hello! I am a Software Engineering student at Iowa State University
+          with an Applied AI minor. In my free time you can find me on the
+          course or in the gym.
+        </p>
+      </div>
+    </header>
+
+    <!-- WORK SECTION: TABS + CARDS -->
+    <main id="work" class="pb-16">
+      <div class="w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Tabs -->
+        <div
+          class="border border-neutral-800 rounded-full p-1 mb-8 flex max-w-md mx-auto justify-center"
+        >
+          <button
+            class="tab-button flex-1 rounded-full px-4 py-2 text-xs sm:text-sm font-medium text-center bg-white text-black"
+            data-target="tab-projects"
+          >
+            Projects
+          </button>
+          <button
+            class="tab-button flex-1 rounded-full px-4 py-2 text-xs sm:text-sm font-medium text-center text-neutral-300"
+            data-target="tab-experience"
+          >
+            Experience
+          </button>
+          <button
+            class="tab-button flex-1 rounded-full px-4 py-2 text-xs sm:text-sm font-medium text-center text-neutral-300"
+            data-target="tab-contact"
+          >
+            Contact
+          </button>
+        </div>
+
+        <!-- PROJECTS PANEL -->
+        <section id="tab-projects" class="tab-panel space-y-6">
+          <h2
+            class="text-sm font-semibold tracking-[0.2em] uppercase text-neutral-400 text-center"
+          >
+            Projects
+          </h2>
+
+          <div class="grid gap-5 md:grid-cols-2">
+            <!-- Stride -->
+            <!--<a
+              href="https://example.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="group block focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400/70 rounded-3xl"
+            >-->
+              <article
+                class="group relative overflow-hidden border border-neutral-800 rounded-3xl p-4 sm:p-6 bg-neutral-950/80 transition-transform duration-300 ease-out hover:-translate-y-1 hover:border-neutral-600 hover:bg-neutral-900/90"
+              >
+                <!-- subtle glow -->
+                <div
+                  class="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                >
+                  <div
+                    class="absolute -inset-20 bg-[radial-gradient(circle_at_top,_rgba(45,212,191,0.18),_transparent_60%)]"
+                  ></div>
+                </div>
+
+                <!-- header -->
+                <div class="relative flex items-center justify-between mb-4">
+                  <div>
+                    <p
+                      class="text-[11px] uppercase tracking-[0.18em] text-neutral-500"
+                    >
+                      Stride
+                    </p>
+                    <p class="text-xs text-neutral-400">
+                      Trainer outreach · Android · Spring Boot
+                    </p>
+                  </div>
+                  <span
+                    class="text-[10px] px-2 py-0.5 rounded-full border border-neutral-700 text-neutral-400"
+                  >
+                    Trainer Portal
+                  </span>
+                </div>
+
+                <!-- animated visual (trainer chat + side logs) -->
+                <div
+                  class="relative h-32 sm:h-36 mb-4 rounded-2xl border border-neutral-800 bg-neutral-950/80 overflow-hidden"
+                >
+                  <div class="absolute inset-0 px-4 py-3 flex gap-3">
+                    <!-- Trainer avatar + status -->
+                    <div class="flex flex-col items-center pt-1">
+                      <div
+                        class="relative h-10 w-10 rounded-full bg-gradient-to-tr from-emerald-400 to-cyan-400 flex items-center justify-center text-[11px] font-semibold text-black"
+                      >
+                        PT
+                      </div>
+                      <span
+                        class="mt-1 h-1.5 w-1.5 rounded-full bg-emerald-400 animate-[pulse_1.8s_ease-in-out_infinite]"
+                      ></span>
+                      <span class="mt-1 text-[9px] text-neutral-400"
+                        >Online</span
+                      >
+                    </div>
+
+                    <!-- Chat bubbles -->
+                    <div class="flex-1 flex flex-col justify-between">
+                      <div class="space-y-1.5">
+                        <div
+                          class="inline-flex max-w-[80%] rounded-2xl bg-neutral-900 px-3 py-1.5 text-[10px] text-neutral-200 animate-[pulse_3s_ease-in-out_infinite]"
+                        >
+                          How did today’s workout feel?
+                        </div>
+                        <div
+                          class="inline-flex max-w-[80%] rounded-2xl bg-emerald-500/90 px-3 py-1.5 text-[10px] text-black self-end"
+                        >
+                          Solid. Legs are toast.
+                        </div>
+                      </div>
+
+                      <!-- Side mini logs row -->
+                      <div class="flex gap-2 text-[9px]">
+                        <div
+                          class="flex-1 rounded-xl bg-neutral-900 border border-neutral-800 px-2 py-1.5 flex flex-col justify-between"
+                        >
+                          <span
+                            class="text-neutral-500 uppercase tracking-[0.18em]"
+                            >Food</span
+                          >
+                          <span class="text-neutral-200 text-[10px]"
+                            >1,350 / 2,100 kcal</span
+                          >
+                        </div>
+                        <div
+                          class="flex-1 rounded-xl bg-neutral-900 border border-neutral-800 px-2 py-1.5 flex flex-col justify-between"
+                        >
+                          <span
+                            class="text-neutral-500 uppercase tracking-[0.18em]"
+                            >Mood</span
+                          >
+                          <span class="text-emerald-400 text-[10px]"
+                            >Energized</span
+                          >
+                        </div>
+                        <div
+                          class="flex-1 rounded-xl bg-neutral-900 border border-neutral-800 px-2 py-1.5 flex flex-col justify-between"
+                        >
+                          <span
+                            class="text-neutral-500 uppercase tracking-[0.18em]"
+                            >Weight</span
+                          >
+                          <span class="text-neutral-200 text-[10px]"
+                            >184.2 lb</span
+                          >
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- one-line description -->
+                <p class="relative text-xs text-neutral-300">
+                  Trainer-first Android app for reaching clients, with food,
+                  mood, and weight logging built in.
+                </p>
+              </article>
+            <!--</a>-->
+            <!-- StockSight AI -->
+            <a
+              href="https://github.com/mikeyy2/stock-sight"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="group block focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400/70 rounded-3xl"
+            >
+              <article
+                class="group relative overflow-hidden border border-neutral-800 rounded-3xl p-4 sm:p-6 bg-neutral-950/80 transition-transform duration-300 ease-out hover:-translate-y-1 hover:border-neutral-600 hover:bg-neutral-900/90"
+              >
+                <div
+                  class="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                >
+                  <div
+                    class="absolute -inset-20 bg-[radial-gradient(circle_at_top,_rgba(96,165,250,0.22),_transparent_60%)]"
+                  ></div>
+                </div>
+
+                <div class="relative flex items-center justify-between mb-4">
+                  <div>
+                    <p
+                      class="text-[11px] uppercase tracking-[0.18em] text-neutral-500"
+                    >
+                      StockSight AI
+                    </p>
+                    <p class="text-xs text-neutral-400">
+                      Python · Keras · Flask
+                    </p>
+                  </div>
+                  <span
+                    class="text-[10px] px-2 py-0.5 rounded-full border border-neutral-700 text-neutral-400"
+                  >
+                    Trading
+                  </span>
+                </div>
+
+                <!-- chart container tagged for JS -->
+                <div
+                  id="stocksight-card"
+                  class="relative h-32 sm:h-36 mb-4 rounded-2xl border border-neutral-800 bg-neutral-950/80 overflow-hidden"
+                >
+                  <div
+                    class="absolute inset-0 opacity-40 bg-[radial-gradient(circle_at_bottom,_rgba(96,165,250,0.6),_transparent_55%)]"
+                  ></div>
+
+                  <!-- grid lines -->
+                  <div class="absolute inset-0">
+                    <div
+                      class="h-full w-full bg-[linear-gradient(to_right,rgba(148,163,184,0.12)_1px,transparent_1px),linear-gradient(to_top,rgba(148,163,184,0.12)_1px,transparent_1px)] bg-[size:18px_18px]"
+                    ></div>
+                  </div>
+
+                  <!-- line that will move with cursor -->
+                  <svg
+                    id="stocksight-svg"
+                    class="relative h-full w-full text-sky-400"
+                    viewBox="0 0 200 80"
+                    preserveAspectRatio="none"
+                  >
+                    <!-- price line -->
+                    <polyline
+                      id="stocksight-line"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      points="0,60 25,55 45,40 65,50 85,30 105,35 125,20 145,32 165,15 185,25 200,10"
+                    />
+
+                    <!-- vertical crosshair -->
+                    <line
+                      id="stocksight-crosshair"
+                      class="stocksight-crosshair"
+                      x1="0"
+                      y1="0"
+                      x2="0"
+                      y2="80"
+                      stroke="currentColor"
+                      stroke-width="0.8"
+                      stroke-opacity="0.6"
+                    />
+
+                    <!-- marker dot on the line -->
+                    <circle
+                      id="stocksight-marker"
+                      class="stocksight-crosshair"
+                      r="2.5"
+                      cx="0"
+                      cy="0"
+                      fill="currentColor"
+                    />
+                  </svg>
+                </div>
+
+                <p class="relative text-xs text-neutral-300">
+                  LSTM-based tool that predicts next-day stock moves from
+                  historical data.
+                </p>
+              </article>
+            </a>
+            <!-- DSPLN -->
+            <a
+              href="https://www.youtube.com/watch?v=Dg7vKsf-yFY"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="group block focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400/70 rounded-3xl"
+            >
+              <article
+                class="group relative overflow-hidden border border-neutral-800 rounded-3xl p-4 sm:p-6 bg-neutral-950/80 transition-transform duration-300 ease-out hover:-translate-y-1 hover:border-neutral-600 hover:bg-neutral-900/90"
+              >
+                <div
+                  class="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                >
+                  <div
+                    class="absolute -inset-20 bg-[radial-gradient(circle_at_top,_rgba(52,211,153,0.22),_transparent_60%)]"
+                  ></div>
+                </div>
+
+                <div class="relative flex items-center justify-between mb-4">
+                  <div>
+                    <p
+                      class="text-[11px] uppercase tracking-[0.18em] text-neutral-500"
+                    >
+                      DSPLN
+                    </p>
+                    <p class="text-xs text-neutral-400">
+                      React · Tailwind · Node · Mongo
+                    </p>
+                  </div>
+                  <span
+                    class="text-[10px] px-2 py-0.5 rounded-full border border-neutral-700 text-neutral-400"
+                  >
+                    Fitness Tracker
+                  </span>
+                </div>
+
+                <!-- fake dashboard -->
+                <div
+                  class="relative h-32 sm:h-36 mb-4 rounded-2xl border border-neutral-800 bg-neutral-950/80 overflow-hidden"
+                >
+                  <div class="absolute inset-0 px-4 py-3 flex flex-col gap-3">
+                    <div class="flex gap-2">
+                      <div
+                        class="flex-1 h-10 rounded-xl bg-neutral-900 border border-neutral-800 flex items-center justify-between px-3"
+                      >
+                        <span class="text-[10px] text-neutral-400"
+                          >Calories</span
+                        >
+                        <span class="text-xs text-emerald-400 font-medium"
+                          >1,980 / 2,200</span
+                        >
+                      </div>
+                      <div
+                        class="flex-1 h-10 rounded-xl bg-neutral-900 border border-neutral-800 flex items-center justify-between px-3"
+                      >
+                        <span class="text-[10px] text-neutral-400"
+                          >Protein</span
+                        >
+                        <span class="text-xs text-sky-400 font-medium"
+                          >132g</span
+                        >
+                      </div>
+                    </div>
+                    <div
+                      class="flex-1 rounded-xl bg-neutral-900 border border-neutral-800 flex items-center justify-center"
+                    >
+                      <div class="flex gap-1">
+                        <span
+                          class="h-6 w-1.5 rounded-full bg-emerald-400/70 animate-[pulse_1.9s_ease-in-out_infinite]"
+                        ></span>
+                        <span
+                          class="h-9 w-1.5 rounded-full bg-sky-400/70 animate-[pulse_2.3s_ease-in-out_infinite]"
+                        ></span>
+                        <span
+                          class="h-4 w-1.5 rounded-full bg-indigo-400/70 animate-[pulse_2.7s_ease-in-out_infinite]"
+                        ></span>
+                        <span
+                          class="h-7 w-1.5 rounded-full bg-emerald-400/70 animate-[pulse_2.1s_ease-in-out_infinite]"
+                        ></span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <p class="relative text-xs text-neutral-300">
+                  Full-stack fitness tracker for workouts, meals, and personal
+                  metrics.
+                </p>
+              </article>
+            </a>
+            <!-- Calcly / n8n -->
+            <a
+              href="https://brianccwork.github.io/Calcly/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="group block focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400/70 rounded-3xl"
+            >
+              <article
+                class="group relative overflow-hidden border border-neutral-800 rounded-3xl p-4 sm:p-6 bg-neutral-950/80 transition-transform duration-300 ease-out hover:-translate-y-1 hover:border-neutral-600 hover:bg-neutral-900/90"
+              >
+                <div
+                  class="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                >
+                  <div
+                    class="absolute -inset-20 bg-[radial-gradient(circle_at_top,_rgba(129,140,248,0.22),_transparent_60%)]"
+                  ></div>
+                </div>
+
+                <div class="relative flex items-center justify-between mb-4">
+                  <div>
+                    <p
+                      class="text-[11px] uppercase tracking-[0.18em] text-neutral-500"
+                    >
+                      Calcly AI
+                    </p>
+                    <p class="text-xs text-neutral-400">Botpress</p>
+                  </div>
+                  <span
+                    class="text-[10px] px-2 py-0.5 rounded-full border border-neutral-700 text-neutral-400"
+                  >
+                    Chatbot
+                  </span>
+                </div>
+
+                <!-- reactive "nodes" -->
+                <div
+                  class="relative h-32 sm:h-36 mb-4 rounded-2xl border border-neutral-800 bg-neutral-950/80 overflow-hidden"
+                >
+                  <div
+                    class="absolute inset-0 flex items-center justify-center"
+                  >
+                    <div class="grid grid-cols-3 gap-4">
+                      <div
+                        class="h-10 w-14 rounded-xl border border-neutral-700 bg-neutral-900 flex items-center justify-center text-[10px] text-neutral-400 animate-[pulse_2.4s_ease-in-out_infinite]"
+                      >
+                        User
+                      </div>
+                      <div
+                        class="h-10 w-14 rounded-xl border border-neutral-700 bg-neutral-900 flex items-center justify-center text-[10px] text-neutral-400 animate-[pulse_3s_ease-in-out_infinite]"
+                      >
+                        Calc
+                      </div>
+                      <div
+                        class="h-10 w-14 rounded-xl border border-neutral-700 bg-neutral-900 flex items-center justify-center text-[10px] text-neutral-400 animate-[pulse_2.7s_ease-in-out_infinite]"
+                      >
+                        Chat
+                      </div>
+                      <div
+                        class="col-span-3 h-1 w-full bg-gradient-to-r from-sky-400 via-indigo-400 to-emerald-400 opacity-70 rounded-full animate-[pulse_2.2s_ease-in-out_infinite]"
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+
+                <p class="relative text-xs text-neutral-300">
+                  AI tutor trained on Iowa State Mathematics .
+                </p>
+              </article>
+            </a>
+          </div>
+        </section>
+
+        <!-- CONTACT PANEL -->
+        <section id="tab-contact" class="tab-panel hidden space-y-6">
+          <h2
+            class="text-sm font-semibold tracking-[0.2em] uppercase text-neutral-400 text-center"
+          >
+            Contact
+          </h2>
+
+          <div class="flex flex-col items-center gap-6">
+            <p
+              class="text-sm sm:text-base text-neutral-300 text-center max-w-md"
+            >
+              Reach out if you want to talk about opportunities, projects, or
+              anything software/AI related.
+            </p>
+
+            <div class="flex items-center justify-center gap-8 sm:gap-10">
+              <!-- Email -->
+              <a
+                href="mailto:mikeypro24@gmail.com"
+                class="group inline-flex flex-col items-center gap-2"
+                aria-label="Email"
+              >
+                <span
+                  class="flex h-12 w-12 items-center justify-center rounded-full border border-neutral-700 group-hover:border-white transition-colors"
+                >
+                  <!-- Mail icon -->
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-6 w-6 text-neutral-300 group-hover:text-white transition-colors"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M3.75 5.25h16.5a.75.75 0 0 1 .75.75v12a.75.75 0 0 1-.75.75H3.75a.75.75 0 0 1-.75-.75v-12a.75.75 0 0 1 .75-.75z"
+                    />
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="m4.5 6.75 7.5 5.25 7.5-5.25"
+                    />
+                  </svg>
+                </span>
+                <span
+                  class="text-xs text-neutral-400 group-hover:text-white transition-colors"
+                >
+                  Email
+                </span>
+              </a>
+
+              <!-- LinkedIn -->
               <a
                 href="https://www.linkedin.com/in/michael-proeschel/"
                 target="_blank"
-                rel="noopener"
-                >linkedin.com/michaelproeschel</a
+                rel="noopener noreferrer"
+                class="group inline-flex flex-col items-center gap-2"
+                aria-label="LinkedIn"
               >
-            </div>
+                <span
+                  class="flex h-12 w-12 items-center justify-center rounded-full border border-neutral-700 group-hover:border-white transition-colors"
+                >
+                  <span
+                    class="text-sm font-semibold tracking-wide text-neutral-300 group-hover:text-white transition-colors"
+                  >
+                    in
+                  </span>
+                </span>
+                <span
+                  class="text-xs text-neutral-400 group-hover:text-white transition-colors"
+                >
+                  LinkedIn
+                </span>
+              </a>
 
-            <div class="contact">
-              <span class="ic" aria-hidden="true">gh</span>
+              <!-- GitHub -->
               <a
                 href="https://github.com/mikeyy2"
                 target="_blank"
-                rel="noopener"
-                >github.com/mikeyy2</a
+                rel="noopener noreferrer"
+                class="group inline-flex flex-col items-center gap-2"
+                aria-label="GitHub"
               >
-            </div>
-
-            <div class="contact">
-              <span class="ic" aria-hidden="true">@</span>
-              <a id="emailLink" href="mailto:mikeypro24@gmail.com"
-                >mikeypro24@gmail.com</a
-              >
-              <button
-                class="copy"
-                data-copy="mikeypro24@gmail.com"
-                aria-label="Copy email"
-              >
-                Copy
-              </button>
-            </div>
-
-            <div class="contact">
-              <span class="ic" aria-hidden="true">☎︎</span>
-              <a href="tel:+1-847-624-0240">+1 (847)-624-0240</a>
-              <button
-                class="copy"
-                data-copy="+18476240240"
-                aria-label="Copy phone"
-              >
-                Copy
-              </button>
+                <span
+                  class="flex h-12 w-12 items-center justify-center rounded-full border border-neutral-700 group-hover:border-white transition-colors"
+                >
+                  <!-- GitHub icon -->
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-6 w-6 text-neutral-300 group-hover:text-white transition-colors"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483
+                       0-.237-.009-.868-.013-1.703-2.782.604-3.369-1.341-3.369-1.341-.454-1.155-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608
+                       1.004.07 1.533 1.032 1.533 1.032.892 1.53 2.341 1.088 2.91.832.091-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951
+                       0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844
+                       a9.56 9.56 0 0 1 2.504.337c1.909-1.296 2.748-1.026 2.748-1.026.546 1.378.203 2.397.1 2.65.64.7 1.027 1.595 1.027 2.688
+                       0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.748
+                       0 .268.18.58.688.482A10.019 10.019 0 0 0 22 12.017C22 6.484 17.523 2 12 2z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
+                </span>
+                <span
+                  class="text-xs text-neutral-400 group-hover:text-white transition-colors"
+                >
+                  GitHub
+                </span>
+              </a>
             </div>
           </div>
-        </div>
-      </section>
-      <div class="spacer"></div>
+        </section>
+
+        <!-- EXPERIENCE PANEL -->
+        <section id="tab-experience" class="tab-panel hidden space-y-6">
+          <h2
+            class="text-sm font-semibold tracking-[0.2em] uppercase text-neutral-400"
+          >
+            Experience
+          </h2>
+
+          <div class="grid grid-cols-1 gap-5">
+            <!-- RSM -->
+            <a
+              href="https://rsmus.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="group block focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400/70 rounded-3xl"
+            >
+              <article
+                class="experience-card group relative overflow-hidden border border-neutral-800 rounded-3xl p-4 sm:p-6 bg-neutral-950/80 transition-transform duration-300 ease-out hover:-translate-y-1 hover:border-neutral-600 hover:bg-neutral-900/90"
+              >
+                <div
+                  class="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                >
+                  <div
+                    class="absolute -inset-20 bg-[radial-gradient(circle_at_top,_rgba(96,165,250,0.18),_transparent_60%)]"
+                  ></div>
+                </div>
+
+                <div class="relative flex items-center justify-between mb-4">
+                  <div>
+                    <p
+                      class="text-[11px] uppercase tracking-[0.18em] text-neutral-500"
+                    >
+                      RSM
+                    </p>
+                    <p class="text-xs text-neutral-400">
+                      Incoming Application Development Intern
+                    </p>
+                  </div>
+                  <span
+                    class="text-[10px] px-2 py-0.5 rounded-full border border-neutral-700 text-neutral-400"
+                  >
+                    Summer 2026
+                  </span>
+                </div>
+
+                <!-- “pipeline” visual -->
+                <div
+                  class="relative h-32 sm:h-36 mb-4 rounded-2xl border border-neutral-800 bg-neutral-950/80 overflow-hidden"
+                >
+                  <div class="absolute inset-0 px-4 py-4 flex flex-col gap-3">
+                    <!-- environments row -->
+                    <div class="flex gap-2 text-[10px]">
+                      <div
+                        class="flex-1 h-8 rounded-xl bg-neutral-900 border border-neutral-800 flex items-center justify-between px-3"
+                      >
+                        <span
+                          class="text-neutral-500 uppercase tracking-[0.18em]"
+                          >Dev</span
+                        >
+                        <span
+                          class="inline-flex items-center gap-1 text-emerald-400"
+                        >
+                          ● <span>Passing</span>
+                        </span>
+                      </div>
+                      <div
+                        class="flex-1 h-8 rounded-xl bg-neutral-900 border border-neutral-800 flex items-center justify-between px-3"
+                      >
+                        <span
+                          class="text-neutral-500 uppercase tracking-[0.18em]"
+                          >QA</span
+                        >
+                        <span
+                          class="inline-flex items-center gap-1 text-sky-400"
+                        >
+                          ● <span>Running</span>
+                        </span>
+                      </div>
+                      <div
+                        class="flex-1 h-8 rounded-xl bg-neutral-900 border border-neutral-800 flex items-center justify-between px-3"
+                      >
+                        <span
+                          class="text-neutral-500 uppercase tracking-[0.18em]"
+                          >Prod</span
+                        >
+                        <span
+                          class="inline-flex items-center gap-1 text-amber-300"
+                        >
+                          ● <span>Stable</span>
+                        </span>
+                      </div>
+                    </div>
+
+                    <!-- moving “ticket” -->
+                    <div
+                      class="relative flex-1 rounded-xl bg-neutral-900 border border-neutral-800 overflow-hidden"
+                    >
+                      <div
+                        class="absolute inset-y-0 left-0 w-full bg-[linear-gradient(to_right,rgba(148,163,184,0.12)_1px,transparent_1px)] bg-[size:20px_100%] opacity-60"
+                      ></div>
+
+                      <div class="relative h-full flex items-center px-3">
+                        <div
+                          class="ticket-pill flex items-center gap-2 rounded-full border border-neutral-700 bg-neutral-950 px-3 py-1 text-[10px] text-neutral-200"
+                        >
+                          <span
+                            class="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-[pulse_1.8s_ease-in-out_infinite]"
+                          ></span>
+                          <span>Feature: Client dashboard</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <p class="relative text-xs text-neutral-300">
+                  Joining RSM to ship production-grade features in a consulting
+                  environment.
+                </p>
+              </article>
+            </a>
+
+            <!-- Drew’s Mobile Detailing -->
+            <a
+              href="https://drewsmobiledetailing.co/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="group block focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400/70 rounded-3xl"
+            >
+              <article
+                class="experience-card group relative overflow-hidden border border-neutral-800 rounded-3xl p-4 sm:p-6 bg-neutral-950/80 transition-transform duration-300 ease-out hover:-translate-y-1 hover:border-neutral-600 hover:bg-neutral-900/90"
+              >
+                <!-- subtle emerald glow on hover -->
+                <div
+                  class="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                >
+                  <div
+                    class="absolute -inset-20 bg-[radial-gradient(circle_at_top,_rgba(52,211,153,0.18),_transparent_60%)]"
+                  ></div>
+                </div>
+
+                <div class="relative flex items-center justify-between mb-4">
+                  <div>
+                    <p
+                      class="text-[11px] uppercase tracking-[0.18em] text-neutral-500"
+                    >
+                      Drew’s Mobile Detailing
+                    </p>
+                    <p class="text-xs text-neutral-400">
+                      Web Developer · Scheduling & marketing site
+                    </p>
+                  </div>
+                  <span
+                    class="text-[10px] px-2 py-0.5 rounded-full border border-neutral-700 text-neutral-400"
+                  >
+                    2024
+                  </span>
+                </div>
+
+                <!-- scheduling visual (static) -->
+                <div
+                  class="relative h-32 sm:h-36 mb-4 rounded-2xl border border-neutral-800 bg-neutral-950/80 overflow-hidden"
+                >
+                  <div class="absolute inset-0 px-4 py-3 flex flex-col gap-3">
+                    <!-- top row: today + slots -->
+                    <div class="flex items-center justify-between text-[10px]">
+                      <div
+                        class="dmd-today-pill inline-flex items-center gap-2 rounded-full border border-neutral-700 bg-neutral-900/90 px-3 py-1"
+                      >
+                        <span
+                          class="h-1.5 w-1.5 rounded-full bg-emerald-400"
+                        ></span>
+                        <span class="dmd-today-text text-white text-[10px]"
+                          >Today · Friday</span
+                        >
+                      </div>
+                      <span class="text-neutral-400">7 bookings</span>
+                    </div>
+
+                    <!-- mini week strip -->
+                    <div class="flex gap-1 text-[9px]">
+                      <div class="dmd-day flex-1">Mon</div>
+                      <div class="dmd-day flex-1">Tue</div>
+                      <div class="dmd-day flex-1">Wed</div>
+                      <div class="dmd-day flex-1">Thu</div>
+                      <div class="dmd-day dmd-day-active flex-1">Fri</div>
+                      <div class="dmd-day flex-1 hidden sm:flex">Sat</div>
+                      <div class="dmd-day flex-1 hidden sm:flex">Sun</div>
+                    </div>
+
+                    <!-- upcoming bookings list -->
+                    <div
+                      class="flex-1 mt-1 rounded-xl bg-neutral-900 border border-neutral-800 px-3 py-2 text-[10px] text-neutral-300"
+                    >
+                      <div class="flex items-center justify-between mb-1.5">
+                        <div class="flex items-center gap-2">
+                          <span
+                            class="h-1.5 w-1.5 rounded-full bg-emerald-400"
+                          ></span>
+                          <span>9:00 AM · Exterior wash</span>
+                        </div>
+                        <span
+                          class="px-2 py-0.5 rounded-full border border-neutral-700 text-[9px] text-neutral-400"
+                        >
+                          Confirmed
+                        </span>
+                      </div>
+                      <div class="flex items-center justify-between mb-1.5">
+                        <div class="flex items-center gap-2">
+                          <span
+                            class="h-1.5 w-1.5 rounded-full bg-emerald-400"
+                          ></span>
+                          <span>11:30 AM · Full detail</span>
+                        </div>
+                        <span
+                          class="px-2 py-0.5 rounded-full border border-neutral-700 text-[9px] text-neutral-400"
+                        >
+                          Confirmed
+                        </span>
+                      </div>
+                      <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                          <span
+                            class="h-1.5 w-1.5 rounded-full bg-amber-400"
+                          ></span>
+                          <span>3:15 PM · Interior clean</span>
+                        </div>
+                        <span
+                          class="px-2 py-0.5 rounded-full border border-neutral-700 text-[9px] text-neutral-400"
+                        >
+                          Pending
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <p class="relative text-xs text-neutral-300">
+                  Built a mobile-first site so customers can browse services,
+                  check availability, and book detailing appointments online.
+                </p>
+              </article>
+            </a>
+            <!-- Caddie – animated golf card -->
+            <a
+              href="https://www.biltmore-cc.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="group block focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400/70 rounded-3xl"
+            >
+              <article
+                class="group relative overflow-hidden border border-neutral-800 rounded-3xl p-4 sm:p-6 bg-neutral-950/80 transition-transform duration-300 ease-out hover:-translate-y-1 hover:border-neutral-600 hover:bg-neutral-900/90"
+              >
+                <!-- subtle glow -->
+                <div
+                  class="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                >
+                  <div
+                    class="absolute -inset-20 bg-[radial-gradient(circle_at_top,_rgba(52,211,153,0.22),_transparent_60%)]"
+                  ></div>
+                </div>
+
+                <!-- header (match RSM structure) -->
+                <div class="relative flex items-center justify-between mb-4">
+                  <div>
+                    <p
+                      class="text-[11px] uppercase tracking-[0.18em] text-neutral-500"
+                    >
+                      Biltmore Country Club
+                    </p>
+                    <p class="text-xs text-neutral-400">
+                      Caddie · Barrington, IL
+                    </p>
+                  </div>
+                  <span
+                    class="text-[10px] px-2 py-0.5 rounded-full border border-neutral-700 text-neutral-400"
+                  >
+                    2017 – Present
+                  </span>
+                </div>
+
+                <!-- mini golf course visual (unchanged) -->
+                <div
+                  class="caddie-course relative mb-4 h-28 sm:h-32 rounded-2xl border border-neutral-800 bg-gradient-to-t from-emerald-900/60 via-neutral-950 to-neutral-950 overflow-hidden"
+                >
+                  <!-- fairway -->
+                  <div
+                    class="absolute inset-x-3 bottom-4 h-8 rounded-full bg-gradient-to-r from-emerald-600/80 via-emerald-500/80 to-emerald-600/80 blur-[1px]"
+                  ></div>
+
+                  <!-- “distance” meter -->
+                  <div
+                    class="absolute left-3 top-3 right-3 h-1 rounded-full bg-neutral-800 overflow-hidden"
+                  >
+                    <div
+                      class="caddie-distance h-full rounded-full bg-gradient-to-r from-emerald-400 via-yellow-300 to-red-400"
+                    ></div>
+                  </div>
+
+                  <!-- hole + flag -->
+                  <div class="absolute right-8 bottom-7 h-14 w-8">
+                    <!-- cup -->
+                    <div
+                      class="absolute bottom-0 left-1/2 -translate-x-1/2 h-3 w-6 rounded-full bg-black/80"
+                    ></div>
+
+                    <!-- pin -->
+                    <div
+                      class="absolute bottom-2 left-1/2 -translate-x-1/2 h-8 w-[2px] bg-neutral-100/80"
+                    ></div>
+
+                    <!-- flag -->
+                    <div
+                      class="caddie-flag absolute bottom-8 left-1/2 -translate-x-[2px] w-3 h-3 bg-red-500 rounded-[2px]"
+                    ></div>
+                  </div>
+
+                  <!-- golf ball -->
+                  <div
+                    class="caddie-ball absolute left-5 bottom-7 h-3 w-3 rounded-full bg-white shadow-[0_0_6px_rgba(255,255,255,0.9)]"
+                  ></div>
+                  <!-- subtle ball shadow -->
+                  <div
+                    class="caddie-ball-shadow absolute left-5 bottom-6 h-2 w-4 rounded-full bg-black/40 blur-[3px]"
+                  ></div>
+                </div>
+
+                <!-- copy (same size/feel as RSM) -->
+                <p class="relative text-xs text-neutral-300">
+                  On-course caddie for member and tournament rounds, building
+                  long-term relationships and situational awareness under
+                  pressure.
+                </p>
+              </article>
+            </a>
+          </div>
+        </section>
+      </div>
     </main>
 
-    <script src="script.js"></script>
+    <!-- FOOTER -->
+    <footer class="border-t border-neutral-900 py-4 mt-8">
+      <div
+        class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-[11px] sm:text-xs text-neutral-500 text-center"
+      >
+        <span>© <span id="year"></span> Michael Proeschel</span>
+      </div>
+    </footer>
+
+    <!-- Tab logic -->
+    <script>
+      // Tabs
+      const tabButtons = document.querySelectorAll(".tab-button");
+      const tabPanels = document.querySelectorAll(".tab-panel");
+
+      tabButtons.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const targetId = btn.getAttribute("data-target");
+
+          tabButtons.forEach((b) => {
+            b.classList.remove("bg-white", "text-black");
+            b.classList.add("text-neutral-300");
+          });
+
+          btn.classList.add("bg-white", "text-black");
+          btn.classList.remove("text-neutral-300");
+
+          tabPanels.forEach((panel) => {
+            if (panel.id === targetId) {
+              panel.classList.remove("hidden");
+            } else {
+              panel.classList.add("hidden");
+            }
+          });
+        });
+      });
+
+      // Theme toggle
+      const bodyEl = document.body;
+      const themeToggleBtn = document.getElementById("theme-toggle");
+
+      function updateThemeIcon() {
+        if (bodyEl.classList.contains("theme-light")) {
+          themeToggleBtn.textContent = "☾";
+        } else {
+          themeToggleBtn.textContent = "☀";
+        }
+      }
+
+      themeToggleBtn.addEventListener("click", () => {
+        bodyEl.classList.toggle("theme-light");
+        updateThemeIcon();
+      });
+
+      updateThemeIcon();
+
+      // Footer year
+      document.getElementById("year").textContent = new Date().getFullYear();
+
+      // === StockSight stock preview effect ===
+      const stockCard = document.getElementById("stocksight-card");
+      const stockSvg = document.getElementById("stocksight-svg");
+      const stockPath = document.getElementById("stocksight-line");
+      const crosshair = document.getElementById("stocksight-crosshair");
+      const markerDot = document.getElementById("stocksight-marker");
+
+      function getPointAtX(path, targetX) {
+        const total = path.getTotalLength();
+        let start = 0;
+        let end = total;
+        let point = path.getPointAtLength(0);
+
+        // Binary search along the path length to approximate the given x
+        for (let i = 0; i < 20; i++) {
+          const mid = (start + end) / 2;
+          point = path.getPointAtLength(mid);
+
+          if (point.x < targetX) {
+            start = mid;
+          } else {
+            end = mid;
+          }
+        }
+        return point;
+      }
+
+      if (stockCard && stockSvg && stockPath && crosshair && markerDot) {
+        stockCard.addEventListener("mousemove", (e) => {
+          const rect = stockSvg.getBoundingClientRect();
+
+          // x in SVG coordinates (0–200 because of viewBox)
+          let x = e.clientX - rect.left;
+          x = Math.max(0, Math.min(rect.width, x));
+          const svgX = (x / rect.width) * 200;
+
+          const pt = getPointAtX(stockPath, svgX);
+
+          // Move the vertical line
+          crosshair.setAttribute("x1", pt.x);
+          crosshair.setAttribute("x2", pt.x);
+          crosshair.setAttribute("y1", 0);
+          crosshair.setAttribute("y2", 80);
+
+          // Move the marker dot
+          markerDot.setAttribute("cx", pt.x);
+          markerDot.setAttribute("cy", pt.y);
+
+          crosshair.style.opacity = 1;
+          markerDot.style.opacity = 1;
+        });
+
+        stockCard.addEventListener("mouseleave", () => {
+          crosshair.style.opacity = 0;
+          markerDot.style.opacity = 0;
+        });
+      }
+    </script>
   </body>
 </html>
