@@ -33,6 +33,17 @@
       };
     </script>
     <style>
+      /* Smooth theme transition */
+      body {
+        transition: background-color 0.8s ease, color 0.6s ease;
+      }
+
+      body article,
+      body footer,
+      body header {
+        transition: background-color 0.8s ease, border-color 0.7s ease;
+      }
+
       /* Keep Biltmore course dark in light mode (remove the "white fog") */
       body.theme-light .caddie-course {
         background-image: linear-gradient(
@@ -45,29 +56,108 @@
         /* match other light cards */
       }
 
-      /* Contact icons: fix light-mode hover so they don't disappear */
-      body.theme-light #tab-contact .group:hover span.rounded-full {
-        background-color: #111827;
-        /* dark circle on hover */
-        border-color: #111827;
+      /* Fake pointer */
+      #fake-ptr {
+        position: fixed;
+        pointer-events: none;
+        z-index: 9999;
+        opacity: 0;
+        transition: opacity 0.15s ease, left 0.55s cubic-bezier(.4,0,.2,1), top 0.55s cubic-bezier(.4,0,.2,1);
+      }
+      #fake-ptr.click-anim { transform: scale(0.82); transition: transform 0.07s ease; }
+
+      /* Fake context menu */
+      .fake-ctx {
+        position: fixed;
+        z-index: 9998;
+        background: #1d1d1f;
+        border: 1px solid rgba(255,255,255,0.11);
+        border-radius: 10px;
+        padding: 4px 0;
+        min-width: 168px;
+        box-shadow: 0 12px 48px rgba(0,0,0,0.7);
+        font-size: 13px;
+        font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        opacity: 0;
+        transform: scale(0.94) translateY(-3px);
+        transform-origin: top left;
+        transition: opacity 0.12s ease, transform 0.12s ease;
+      }
+      .fake-ctx.open { opacity: 1; transform: scale(1) translateY(0); }
+      .ctx-row {
+        padding: 5px 14px;
+        color: #e5e5ea;
+        border-radius: 6px;
+        margin: 1px 4px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .ctx-row.dim { color: #505055; }
+      .ctx-row.hi  { background: #0a84ff; color: #fff; }
+      .ctx-divider { height: 1px; background: rgba(255,255,255,0.1); margin: 3px 0; }
+
+      /* Typewriter cursor */
+      .tw-cursor {
+        display: inline-block;
+        margin-left: 2px;
+        animation: tw-blink 0.65s step-end infinite;
+      }
+      .tw-cursor.done {
+        opacity: 0;
+        animation: none;
+      }
+      @keyframes tw-blink {
+        0%, 100% { opacity: 1; }
+        50%       { opacity: 0; }
       }
 
-      /* keep the glyphs readable on that dark circle */
-      body.theme-light #tab-contact .group:hover svg,
-      body.theme-light #tab-contact .group:hover span.text-neutral-300 {
-        color: #ffffff;
-        fill: #ffffff;
+      /* Timeline */
+      .tl-wrap {
+        max-width: 520px;
+        margin: 0 auto;
       }
+      .tl-entry {
+        position: relative;
+        padding-left: 28px;
+        padding-bottom: 36px;
+        margin-left: 7px;
+        border-left: 1px solid #2a2a2a;
+      }
+      .tl-entry:last-child {
+        padding-bottom: 0;
+        border-left-color: transparent;
+      }
+      .tl-dot {
+        position: absolute;
+        left: -7px;
+        top: 3px;
+        width: 13px;
+        height: 13px;
+        border-radius: 50%;
+        border: 1px solid;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .tl-dot-inner {
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+      }
+      .tl-dot-sky   { border-color: #38bdf8; background-color: #050e18; }
+      .tl-dot-sky   .tl-dot-inner { background-color: #38bdf8; }
+      .tl-dot-green { border-color: #34d399; background-color: #051510; }
+      .tl-dot-green .tl-dot-inner { background-color: #34d399; }
+      .tl-dot-gray  { border-color: #525252; background-color: #0d0d0d; }
+      .tl-dot-gray  .tl-dot-inner { background-color: #525252; }
 
-      /* label under the icon stays dark until hover, then switches to dark text on light bg */
-      body.theme-light #tab-contact .group span.text-xs.text-neutral-400 {
-        color: #111827;
-      }
-
-      body.theme-light #tab-contact .group:hover span.text-xs.text-neutral-400 {
-        color: #111827;
-        /* keep it dark; you can change to white if you prefer */
-      }
+      /* Light mode overrides */
+      body.theme-light .tl-entry { border-left-color: #d1d5db; }
+      body.theme-light .tl-entry p.text-white { color: #111827; }
+      body.theme-light .tl-dot-sky  { background-color: #e0f2fe; }
+      body.theme-light .tl-dot-green { background-color: #d1fae5; }
+      body.theme-light .tl-dot-gray  { background-color: #f3f4f6; }
 
       /* Base transition for all tabs */
       .tab-button {
@@ -76,10 +166,8 @@
 
       /* Dark mode hover for inactive tabs */
       body:not(.theme-light) .tab-button:not(.bg-white):hover {
-        background-color: #0b1120;
-        /* slate-950-ish */
+        background-color: #1a1a1a;
         color: #e5e7eb;
-        /* neutral-200 */
       }
 
       /* Light mode hover for inactive tabs */
@@ -260,6 +348,24 @@
         transition: transform 0.15s ease-out;
       }
 
+      /* Dark theme: soften blacks to dark grey */
+      body:not(.theme-light) {
+        background-color: #1e1e1e;
+      }
+
+      body:not(.theme-light) .bg-black,
+      body:not(.theme-light) .bg-neutral-950 {
+        background-color: #252525;
+      }
+
+      body:not(.theme-light) .bg-neutral-950\/80 {
+        background-color: rgba(37, 37, 37, 0.8);
+      }
+
+      body:not(.theme-light) .bg-neutral-900 {
+        background-color: #2e2e2e;
+      }
+
       /* Light theme overrides (dark remains the default) */
       body.theme-light {
         background-color: #f9fafb;
@@ -302,7 +408,7 @@
       body.theme-light .bg-neutral-950\/80,
       body.theme-light .bg-neutral-900 {
         background-color: #ffffff;
-        /* inner “screens” / cards */
+        /* inner "screens" / cards */
       }
 
       body.theme-light .border-neutral-800,
@@ -318,6 +424,20 @@
       body.theme-light .text-neutral-500 {
         color: #111827;
       }
+
+      /* Project card titles in light mode */
+      body.theme-light #tab-projects article h2 {
+        color: #111827;
+      }
+
+      /* Opacity-variant backgrounds missed by the generic override */
+      body.theme-light .bg-neutral-900\/80 {
+        background-color: rgba(243, 244, 246, 0.8);
+      }
+
+      body.theme-light .bg-neutral-900\/40 {
+        background-color: rgba(243, 244, 246, 0.4);
+      }
     </style>
   </head>
 
@@ -332,29 +452,34 @@
     </button>
 
     <!-- HERO / TOP SECTION -->
-    <header class="min-h-[75vh] flex items-center">
+    <header class="min-h-screen flex items-center">
       <div class="w-full max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-        <p class="text-xs uppercase tracking-[0.25em] text-neutral-400 mb-3">
-          Software Engineering · AI
-        </p>
-
         <h1 class="text-3xl sm:text-4xl md:text-5xl font-semibold mb-4">
-          Michael Proeschel
+          <span id="typewriter"></span><span id="tw-cursor" class="tw-cursor">|</span>
         </h1>
 
-        <p
-          class="text-sm sm:text-base md:text-lg text-neutral-200 max-w-2xl leading-relaxed"
-        >
-          Hello! I am a Software Engineering student at Iowa State University
-          with an Applied AI minor. In my free time you can find me on the
-          course or in the gym.
-        </p>
+<p class="text-sm sm:text-base md:text-lg text-neutral-200 max-w-2xl leading-relaxed">
+  <span id="bio-text" class="block min-h-[5em]"></span>
+</p>
       </div>
     </header>
 
     <!-- WORK SECTION: TABS + CARDS -->
     <main id="work" class="pb-16">
       <div class="w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-6">
+<h2 class="text-sm font-semibold tracking-[0.2em] uppercase text-neutral-400 text-center mb-3">
+  Contact
+</h2>
+        <!-- Contact links -->
+        <div class="flex items-center justify-center gap-5 mb-6 text-xs text-neutral-500">
+          <a href="mailto:mikeypro24@gmail.com" class="hover:text-neutral-300 transition-colors">Email</a>
+          <span class="text-neutral-700">·</span>
+          <a href="https://www.linkedin.com/in/michael-proeschel/" target="_blank" rel="noopener noreferrer" class="hover:text-neutral-300 transition-colors">LinkedIn</a>
+          <span class="text-neutral-700">·</span>
+          <a href="https://github.com/mikeyy2" target="_blank" rel="noopener noreferrer" class="hover:text-neutral-300 transition-colors">GitHub</a>
+        </div>
+
         <!-- Tabs -->
         <div
           class="border border-neutral-800 rounded-full p-1 mb-8 flex max-w-md mx-auto justify-center"
@@ -371,858 +496,237 @@
           >
             Experience
           </button>
-          <button
-            class="tab-button flex-1 rounded-full px-4 py-2 text-xs sm:text-sm font-medium text-center text-neutral-300"
-            data-target="tab-contact"
-          >
-            Contact
-          </button>
         </div>
 
         <!-- PROJECTS PANEL -->
-        <section id="tab-projects" class="tab-panel space-y-6">
-          <h2
+        <section id="tab-projects" class="tab-panel active space-y-6">
+          <!-- <h2
             class="text-sm font-semibold tracking-[0.2em] uppercase text-neutral-400 text-center"
           >
             Projects
-          </h2>
+          </h2> -->
 
           <div class="grid gap-5 md:grid-cols-2">
+
             <!-- Stride -->
-            <!--<a
-              href="https://example.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="group block focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400/70 rounded-3xl"
-            >-->
-              <article
-                class="group relative overflow-hidden border border-neutral-800 rounded-3xl p-4 sm:p-6 bg-neutral-950/80 transition-transform duration-300 ease-out hover:-translate-y-1 hover:border-neutral-600 hover:bg-neutral-900/90"
-              >
-                <!-- subtle glow -->
-                <div
-                  class="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                >
-                  <div
-                    class="absolute -inset-20 bg-[radial-gradient(circle_at_top,_rgba(45,212,191,0.18),_transparent_60%)]"
-                  ></div>
-                </div>
-
-                <!-- header -->
-                <div class="relative flex items-center justify-between mb-4">
-                  <div>
-                    <p
-                      class="text-[11px] uppercase tracking-[0.18em] text-neutral-500"
-                    >
-                      Stride
-                    </p>
-                    <p class="text-xs text-neutral-400">
-                      Trainer outreach · Android · Spring Boot
-                    </p>
-                  </div>
-                  <span
-                    class="text-[10px] px-2 py-0.5 rounded-full border border-neutral-700 text-neutral-400"
-                  >
-                    Trainer Portal
-                  </span>
-                </div>
-
-                <!-- animated visual (trainer chat + side logs) -->
-                <div
-                  class="relative h-32 sm:h-36 mb-4 rounded-2xl border border-neutral-800 bg-neutral-950/80 overflow-hidden"
-                >
-                  <div class="absolute inset-0 px-4 py-3 flex gap-3">
-                    <!-- Trainer avatar + status -->
-                    <div class="flex flex-col items-center pt-1">
-                      <div
-                        class="relative h-10 w-10 rounded-full bg-gradient-to-tr from-emerald-400 to-cyan-400 flex items-center justify-center text-[11px] font-semibold text-black"
-                      >
-                        PT
-                      </div>
-                      <span
-                        class="mt-1 h-1.5 w-1.5 rounded-full bg-emerald-400 animate-[pulse_1.8s_ease-in-out_infinite]"
-                      ></span>
-                      <span class="mt-1 text-[9px] text-neutral-400"
-                        >Online</span
-                      >
+            <article class="group relative flex flex-col overflow-hidden border border-neutral-800 rounded-3xl bg-neutral-950/80 hover:border-neutral-600 hover:bg-neutral-900/90">
+              <div class="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <div class="absolute -inset-20 bg-[radial-gradient(circle_at_top,_rgba(45,212,191,0.18),_transparent_60%)]"></div>
+              </div>
+              <div class="relative flex flex-col flex-1 p-6 sm:p-8">
+                <h2 class="text-2xl font-bold text-white mb-0.5">Stride</h2>
+                <p class="text-xs text-neutral-500 mb-5">Android · Spring Boot</p>
+                <div class="relative h-40 sm:h-44 mb-5 rounded-2xl border border-neutral-800 bg-neutral-950/80 overflow-hidden">
+                  <div class="absolute inset-0 opacity-25 bg-[radial-gradient(circle_at_top,_rgba(52,211,153,0.5),_transparent_65%)]"></div>
+                  <div class="absolute inset-0 px-4 py-3 flex flex-col gap-2">
+                    <!-- header -->
+                    <div class="flex items-center justify-between">
+                      <span class="text-[9px] uppercase tracking-[0.15em] text-neutral-500">Today’s Session</span>
+                      <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-[9px] text-emerald-400">
+                        <span class="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-[pulse_1.8s_ease-in-out_infinite]"></span>
+                        Coach Alex
+                      </span>
                     </div>
-
-                    <!-- Chat bubbles -->
-                    <div class="flex-1 flex flex-col justify-between">
-                      <div class="space-y-1.5">
-                        <div
-                          class="inline-flex max-w-[80%] rounded-2xl bg-neutral-900 px-3 py-1.5 text-[10px] text-neutral-200 animate-[pulse_3s_ease-in-out_infinite]"
-                        >
-                          How did today’s workout feel?
+                    <!-- exercise rows -->
+                    <div class="flex flex-col gap-1.5">
+                      <!-- completed -->
+                      <div class="flex items-center gap-2.5 rounded-xl bg-neutral-900/80 border border-neutral-800 px-3 py-1.5">
+                        <div class="h-4 w-4 rounded-full bg-emerald-500/20 border border-emerald-500/60 flex items-center justify-center flex-shrink-0">
+                          <svg class="h-2.5 w-2.5 text-emerald-400" fill="none" viewBox="0 0 12 12"><path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </div>
-                        <div
-                          class="inline-flex max-w-[80%] rounded-2xl bg-emerald-500/90 px-3 py-1.5 text-[10px] text-black self-end"
-                        >
-                          Solid. Legs are toast.
-                        </div>
+                        <span class="flex-1 text-[10px] text-neutral-300">Squat</span>
+                        <span class="text-[9px] text-neutral-500">4 × 8</span>
+                        <div class="w-12 h-1 rounded-full bg-neutral-800 overflow-hidden"><div class="h-full w-full bg-emerald-500 rounded-full"></div></div>
                       </div>
-
-                      <!-- Side mini logs row -->
-                      <div class="flex gap-2 text-[9px]">
-                        <div
-                          class="flex-1 rounded-xl bg-neutral-900 border border-neutral-800 px-2 py-1.5 flex flex-col justify-between"
-                        >
-                          <span
-                            class="text-neutral-500 uppercase tracking-[0.18em]"
-                            >Food</span
-                          >
-                          <span class="text-neutral-200 text-[10px]"
-                            >1,350 / 2,100 kcal</span
-                          >
+                      <!-- in progress -->
+                      <div class="flex items-center gap-2.5 rounded-xl bg-neutral-900/80 border border-emerald-500/25 px-3 py-1.5">
+                        <div class="h-4 w-4 rounded-full bg-emerald-500/10 border border-emerald-500/40 flex items-center justify-center flex-shrink-0 animate-[pulse_2s_ease-in-out_infinite]">
+                          <div class="h-1.5 w-1.5 rounded-full bg-emerald-400"></div>
                         </div>
-                        <div
-                          class="flex-1 rounded-xl bg-neutral-900 border border-neutral-800 px-2 py-1.5 flex flex-col justify-between"
-                        >
-                          <span
-                            class="text-neutral-500 uppercase tracking-[0.18em]"
-                            >Mood</span
-                          >
-                          <span class="text-emerald-400 text-[10px]"
-                            >Energized</span
-                          >
-                        </div>
-                        <div
-                          class="flex-1 rounded-xl bg-neutral-900 border border-neutral-800 px-2 py-1.5 flex flex-col justify-between"
-                        >
-                          <span
-                            class="text-neutral-500 uppercase tracking-[0.18em]"
-                            >Weight</span
-                          >
-                          <span class="text-neutral-200 text-[10px]"
-                            >184.2 lb</span
-                          >
-                        </div>
+                        <span class="flex-1 text-[10px] text-neutral-200">Bench Press</span>
+                        <span class="text-[9px] text-neutral-500">3 × 10</span>
+                        <div class="w-12 h-1 rounded-full bg-neutral-800 overflow-hidden"><div class="h-full w-7 bg-emerald-500/70 rounded-full"></div></div>
+                      </div>
+                      <!-- pending -->
+                      <div class="flex items-center gap-2.5 rounded-xl bg-neutral-900/40 border border-neutral-800/50 px-3 py-1.5">
+                        <div class="h-4 w-4 rounded-full border border-neutral-700 flex-shrink-0"></div>
+                        <span class="flex-1 text-[10px] text-neutral-500">Deadlift</span>
+                        <span class="text-[9px] text-neutral-600">4 × 6</span>
+                        <div class="w-12 h-1 rounded-full bg-neutral-800 overflow-hidden"></div>
                       </div>
                     </div>
-                  </div>
-                </div>
-
-                <!-- one-line description -->
-                <p class="relative text-xs text-neutral-300">
-                  Trainer-first Android app for reaching clients, with food,
-                  mood, and weight logging built in.
-                </p>
-              </article>
-            <!--</a>-->
-            <!-- StockSight AI -->
-            <a
-              href="https://github.com/mikeyy2/stock-sight"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="group block focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400/70 rounded-3xl"
-            >
-              <article
-                class="group relative overflow-hidden border border-neutral-800 rounded-3xl p-4 sm:p-6 bg-neutral-950/80 transition-transform duration-300 ease-out hover:-translate-y-1 hover:border-neutral-600 hover:bg-neutral-900/90"
-              >
-                <div
-                  class="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                >
-                  <div
-                    class="absolute -inset-20 bg-[radial-gradient(circle_at_top,_rgba(96,165,250,0.22),_transparent_60%)]"
-                  ></div>
-                </div>
-
-                <div class="relative flex items-center justify-between mb-4">
-                  <div>
-                    <p
-                      class="text-[11px] uppercase tracking-[0.18em] text-neutral-500"
-                    >
-                      StockSight AI
-                    </p>
-                    <p class="text-xs text-neutral-400">
-                      Python · Keras · Flask
-                    </p>
-                  </div>
-                  <span
-                    class="text-[10px] px-2 py-0.5 rounded-full border border-neutral-700 text-neutral-400"
-                  >
-                    Trading
-                  </span>
-                </div>
-
-                <!-- chart container tagged for JS -->
-                <div
-                  id="stocksight-card"
-                  class="relative h-32 sm:h-36 mb-4 rounded-2xl border border-neutral-800 bg-neutral-950/80 overflow-hidden"
-                >
-                  <div
-                    class="absolute inset-0 opacity-40 bg-[radial-gradient(circle_at_bottom,_rgba(96,165,250,0.6),_transparent_55%)]"
-                  ></div>
-
-                  <!-- grid lines -->
-                  <div class="absolute inset-0">
-                    <div
-                      class="h-full w-full bg-[linear-gradient(to_right,rgba(148,163,184,0.12)_1px,transparent_1px),linear-gradient(to_top,rgba(148,163,184,0.12)_1px,transparent_1px)] bg-[size:18px_18px]"
-                    ></div>
-                  </div>
-
-                  <!-- line that will move with cursor -->
-                  <svg
-                    id="stocksight-svg"
-                    class="relative h-full w-full text-sky-400"
-                    viewBox="0 0 200 80"
-                    preserveAspectRatio="none"
-                  >
-                    <!-- price line -->
-                    <polyline
-                      id="stocksight-line"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      points="0,60 25,55 45,40 65,50 85,30 105,35 125,20 145,32 165,15 185,25 200,10"
-                    />
-
-                    <!-- vertical crosshair -->
-                    <line
-                      id="stocksight-crosshair"
-                      class="stocksight-crosshair"
-                      x1="0"
-                      y1="0"
-                      x2="0"
-                      y2="80"
-                      stroke="currentColor"
-                      stroke-width="0.8"
-                      stroke-opacity="0.6"
-                    />
-
-                    <!-- marker dot on the line -->
-                    <circle
-                      id="stocksight-marker"
-                      class="stocksight-crosshair"
-                      r="2.5"
-                      cx="0"
-                      cy="0"
-                      fill="currentColor"
-                    />
-                  </svg>
-                </div>
-
-                <p class="relative text-xs text-neutral-300">
-                  LSTM-based tool that predicts next-day stock moves from
-                  historical data.
-                </p>
-              </article>
-            </a>
-            <!-- DSPLN -->
-            <a
-              href="https://www.youtube.com/watch?v=Dg7vKsf-yFY"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="group block focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400/70 rounded-3xl"
-            >
-              <article
-                class="group relative overflow-hidden border border-neutral-800 rounded-3xl p-4 sm:p-6 bg-neutral-950/80 transition-transform duration-300 ease-out hover:-translate-y-1 hover:border-neutral-600 hover:bg-neutral-900/90"
-              >
-                <div
-                  class="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                >
-                  <div
-                    class="absolute -inset-20 bg-[radial-gradient(circle_at_top,_rgba(52,211,153,0.22),_transparent_60%)]"
-                  ></div>
-                </div>
-
-                <div class="relative flex items-center justify-between mb-4">
-                  <div>
-                    <p
-                      class="text-[11px] uppercase tracking-[0.18em] text-neutral-500"
-                    >
-                      DSPLN
-                    </p>
-                    <p class="text-xs text-neutral-400">
-                      React · Tailwind · Node · Mongo
-                    </p>
-                  </div>
-                  <span
-                    class="text-[10px] px-2 py-0.5 rounded-full border border-neutral-700 text-neutral-400"
-                  >
-                    Fitness Tracker
-                  </span>
-                </div>
-
-                <!-- fake dashboard -->
-                <div
-                  class="relative h-32 sm:h-36 mb-4 rounded-2xl border border-neutral-800 bg-neutral-950/80 overflow-hidden"
-                >
-                  <div class="absolute inset-0 px-4 py-3 flex flex-col gap-3">
-                    <div class="flex gap-2">
-                      <div
-                        class="flex-1 h-10 rounded-xl bg-neutral-900 border border-neutral-800 flex items-center justify-between px-3"
-                      >
-                        <span class="text-[10px] text-neutral-400"
-                          >Calories</span
-                        >
-                        <span class="text-xs text-emerald-400 font-medium"
-                          >1,980 / 2,200</span
-                        >
-                      </div>
-                      <div
-                        class="flex-1 h-10 rounded-xl bg-neutral-900 border border-neutral-800 flex items-center justify-between px-3"
-                      >
-                        <span class="text-[10px] text-neutral-400"
-                          >Protein</span
-                        >
-                        <span class="text-xs text-sky-400 font-medium"
-                          >132g</span
-                        >
-                      </div>
-                    </div>
-                    <div
-                      class="flex-1 rounded-xl bg-neutral-900 border border-neutral-800 flex items-center justify-center"
-                    >
+                    <!-- streak footer -->
+                    <div class="flex items-center justify-between mt-auto">
                       <div class="flex gap-1">
-                        <span
-                          class="h-6 w-1.5 rounded-full bg-emerald-400/70 animate-[pulse_1.9s_ease-in-out_infinite]"
-                        ></span>
-                        <span
-                          class="h-9 w-1.5 rounded-full bg-sky-400/70 animate-[pulse_2.3s_ease-in-out_infinite]"
-                        ></span>
-                        <span
-                          class="h-4 w-1.5 rounded-full bg-indigo-400/70 animate-[pulse_2.7s_ease-in-out_infinite]"
-                        ></span>
-                        <span
-                          class="h-7 w-1.5 rounded-full bg-emerald-400/70 animate-[pulse_2.1s_ease-in-out_infinite]"
-                        ></span>
+                        <span class="h-1.5 w-3.5 rounded-full bg-emerald-500"></span>
+                        <span class="h-1.5 w-3.5 rounded-full bg-emerald-500"></span>
+                        <span class="h-1.5 w-3.5 rounded-full bg-emerald-500"></span>
+                        <span class="h-1.5 w-3.5 rounded-full bg-emerald-500"></span>
+                        <span class="h-1.5 w-3.5 rounded-full bg-neutral-700"></span>
                       </div>
+                      <span class="text-[9px] text-neutral-500">4-day streak</span>
                     </div>
                   </div>
                 </div>
-
-                <p class="relative text-xs text-neutral-300">
-                  Full-stack fitness tracker for workouts, meals, and personal
-                  metrics.
-                </p>
-              </article>
-            </a>
-            <!-- Calcly / n8n -->
-            <a
-              href="https://brianccwork.github.io/Calcly/"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="group block focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400/70 rounded-3xl"
-            >
-              <article
-                class="group relative overflow-hidden border border-neutral-800 rounded-3xl p-4 sm:p-6 bg-neutral-950/80 transition-transform duration-300 ease-out hover:-translate-y-1 hover:border-neutral-600 hover:bg-neutral-900/90"
-              >
-                <div
-                  class="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                >
-                  <div
-                    class="absolute -inset-20 bg-[radial-gradient(circle_at_top,_rgba(129,140,248,0.22),_transparent_60%)]"
-                  ></div>
+                <div class="flex-1 space-y-3 mb-5">
+                  <p class="text-sm text-neutral-300">Trainer-first Android app that lets fitness trainers reach and monitor clients directly from their phone.</p>
+                  <p class="text-sm text-neutral-400">Built with Kotlin and Spring Boot. Clients log daily food intake, mood, and body weight — trainers review logs and message clients in real time.</p>
                 </div>
+                <div class="pt-4 border-t border-neutral-800/60">
+                  <a href="https://www.youtube.com/watch?v=pbdyUc6dkDg" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 text-sm text-sky-400 hover:text-sky-300">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z"/><path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z"/></svg>
+                    Demo
+                  </a>
+                </div>
+              </div>
+            </article>
 
-                <div class="relative flex items-center justify-between mb-4">
-                  <div>
-                    <p
-                      class="text-[11px] uppercase tracking-[0.18em] text-neutral-500"
-                    >
-                      Calcly AI
-                    </p>
-                    <p class="text-xs text-neutral-400">Botpress</p>
+            <!-- StockSight AI -->
+            <article class="group relative flex flex-col overflow-hidden border border-neutral-800 rounded-3xl bg-neutral-950/80 hover:border-neutral-600 hover:bg-neutral-900/90">
+                <div class="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <div class="absolute -inset-20 bg-[radial-gradient(circle_at_top,_rgba(96,165,250,0.22),_transparent_60%)]"></div>
+                </div>
+                <div class="relative flex flex-col flex-1 p-6 sm:p-8">
+                  <h2 class="text-2xl font-bold text-white mb-0.5">StockSight AI</h2>
+                  <p class="text-xs text-neutral-500 mb-5">Python · Keras · Flask</p>
+                  <div id="stocksight-card" class="relative h-40 sm:h-44 mb-5 rounded-2xl border border-neutral-800 bg-neutral-950/80 overflow-hidden">
+                    <div class="absolute inset-0 opacity-40 bg-[radial-gradient(circle_at_bottom,_rgba(96,165,250,0.6),_transparent_55%)]"></div>
+                    <div class="absolute inset-0">
+                      <div class="h-full w-full bg-[linear-gradient(to_right,rgba(148,163,184,0.12)_1px,transparent_1px),linear-gradient(to_top,rgba(148,163,184,0.12)_1px,transparent_1px)] bg-[size:18px_18px]"></div>
+                    </div>
+                    <svg id="stocksight-svg" class="relative h-full w-full text-sky-400" viewBox="0 0 200 80" preserveAspectRatio="none">
+                      <polyline id="stocksight-line" fill="none" stroke="currentColor" stroke-width="2" points="0,60 25,55 45,40 65,50 85,30 105,35 125,20 145,32 165,15 185,25 200,10"/>
+                      <line id="stocksight-crosshair" class="stocksight-crosshair" x1="0" y1="0" x2="0" y2="80" stroke="currentColor" stroke-width="0.8" stroke-opacity="0.6"/>
+                      <circle id="stocksight-marker" class="stocksight-crosshair" r="2.5" cx="0" cy="0" fill="currentColor"/>
+                    </svg>
                   </div>
-                  <span
-                    class="text-[10px] px-2 py-0.5 rounded-full border border-neutral-700 text-neutral-400"
-                  >
-                    Chatbot
-                  </span>
+                  <div class="flex-1 space-y-3 mb-5">
+                    <p class="text-sm text-neutral-300">LSTM-based tool that predicts next-day stock price movement from historical market data.</p>
+                    <p class="text-sm text-neutral-400">Built with Python, Keras, and Flask. Trains a long short-term memory network on OHLCV data and serves predictions through a lightweight web interface.</p>
+                  </div>
+                  <div class="pt-4 border-t border-neutral-800/60">
+                    <a href="https://github.com/mikeyy2/stock-sight" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 text-sm text-sky-400 hover:text-sky-300">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z"/><path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z"/></svg>
+                      GitHub
+                    </a>
+                  </div>
                 </div>
+              </article>
 
-                <!-- reactive "nodes" -->
-                <div
-                  class="relative h-32 sm:h-36 mb-4 rounded-2xl border border-neutral-800 bg-neutral-950/80 overflow-hidden"
-                >
-                  <div
-                    class="absolute inset-0 flex items-center justify-center"
-                  >
-                    <div class="grid grid-cols-3 gap-4">
-                      <div
-                        class="h-10 w-14 rounded-xl border border-neutral-700 bg-neutral-900 flex items-center justify-center text-[10px] text-neutral-400 animate-[pulse_2.4s_ease-in-out_infinite]"
-                      >
-                        User
+            <!-- DSPLN -->
+            <article class="group relative flex flex-col overflow-hidden border border-neutral-800 rounded-3xl bg-neutral-950/80 hover:border-neutral-600 hover:bg-neutral-900/90">
+                <div class="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <div class="absolute -inset-20 bg-[radial-gradient(circle_at_top,_rgba(52,211,153,0.22),_transparent_60%)]"></div>
+                </div>
+                <div class="relative flex flex-col flex-1 p-6 sm:p-8">
+                  <h2 class="text-2xl font-bold text-white mb-0.5">DSPLN</h2>
+                  <p class="text-xs text-neutral-500 mb-5">React · Tailwind · Node · MongoDB</p>
+                  <div class="relative h-40 sm:h-44 mb-5 rounded-2xl border border-neutral-800 bg-neutral-950/80 overflow-hidden">
+                    <div class="absolute inset-0 px-4 py-3 flex flex-col gap-3">
+                      <div class="flex gap-2">
+                        <div class="flex-1 h-10 rounded-xl bg-neutral-900 border border-neutral-800 flex items-center justify-between px-3">
+                          <span class="text-[10px] text-neutral-400">Calories</span>
+                          <span class="text-xs text-emerald-400 font-medium">1,980 / 2,200</span>
+                        </div>
+                        <div class="flex-1 h-10 rounded-xl bg-neutral-900 border border-neutral-800 flex items-center justify-between px-3">
+                          <span class="text-[10px] text-neutral-400">Protein</span>
+                          <span class="text-xs text-sky-400 font-medium">132g</span>
+                        </div>
                       </div>
-                      <div
-                        class="h-10 w-14 rounded-xl border border-neutral-700 bg-neutral-900 flex items-center justify-center text-[10px] text-neutral-400 animate-[pulse_3s_ease-in-out_infinite]"
-                      >
-                        Calc
+                      <div class="flex-1 rounded-xl bg-neutral-900 border border-neutral-800 flex items-center justify-center">
+                        <div class="flex gap-1">
+                          <span class="h-6 w-1.5 rounded-full bg-emerald-400/70 animate-[pulse_1.9s_ease-in-out_infinite]"></span>
+                          <span class="h-9 w-1.5 rounded-full bg-sky-400/70 animate-[pulse_2.3s_ease-in-out_infinite]"></span>
+                          <span class="h-4 w-1.5 rounded-full bg-indigo-400/70 animate-[pulse_2.7s_ease-in-out_infinite]"></span>
+                          <span class="h-7 w-1.5 rounded-full bg-emerald-400/70 animate-[pulse_2.1s_ease-in-out_infinite]"></span>
+                        </div>
                       </div>
-                      <div
-                        class="h-10 w-14 rounded-xl border border-neutral-700 bg-neutral-900 flex items-center justify-center text-[10px] text-neutral-400 animate-[pulse_2.7s_ease-in-out_infinite]"
-                      >
-                        Chat
-                      </div>
-                      <div
-                        class="col-span-3 h-1 w-full bg-gradient-to-r from-sky-400 via-indigo-400 to-emerald-400 opacity-70 rounded-full animate-[pulse_2.2s_ease-in-out_infinite]"
-                      ></div>
                     </div>
                   </div>
+                  <div class="flex-1 space-y-3 mb-5">
+                    <p class="text-sm text-neutral-300">Full-stack fitness tracker for logging workouts, meals, and personal body metrics in one place.</p>
+                    <p class="text-sm text-neutral-400">Built with React, Tailwind CSS, Node.js, and MongoDB. Tracks daily macros, workout history, and weight trends with a real-time dashboard.</p>
+                  </div>
+                  <div class="pt-4 border-t border-neutral-800/60">
+                    <a href="https://www.youtube.com/watch?v=Dg7vKsf-yFY" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 text-sm text-sky-400 hover:text-sky-300">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z"/><path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z"/></svg>
+                      Demo
+                    </a>
+                  </div>
                 </div>
-
-                <p class="relative text-xs text-neutral-300">
-                  AI tutor trained on Iowa State Mathematics.
-                </p>
               </article>
-            </a>
-          </div>
-        </section>
 
-        <!-- CONTACT PANEL -->
-        <section id="tab-contact" class="tab-panel hidden space-y-6">
-          <h2
-            class="text-sm font-semibold tracking-[0.2em] uppercase text-neutral-400 text-center"
-          >
-            Contact
-          </h2>
+            <!-- Calcly AI -->
+            <article class="group relative flex flex-col overflow-hidden border border-neutral-800 rounded-3xl bg-neutral-950/80 hover:border-neutral-600 hover:bg-neutral-900/90">
+                <div class="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <div class="absolute -inset-20 bg-[radial-gradient(circle_at_top,_rgba(129,140,248,0.22),_transparent_60%)]"></div>
+                </div>
+                <div class="relative flex flex-col flex-1 p-6 sm:p-8">
+                  <h2 class="text-2xl font-bold text-white mb-0.5">Calcly AI</h2>
+                  <p class="text-xs text-neutral-500 mb-5">Botpress</p>
+                  <div class="relative h-40 sm:h-44 mb-5 rounded-2xl border border-neutral-800 bg-neutral-950/80 overflow-hidden">
+                    <div class="absolute inset-0 flex items-center justify-center">
+                      <div class="grid grid-cols-3 gap-4">
+                        <div class="h-10 w-14 rounded-xl border border-neutral-700 bg-neutral-900 flex items-center justify-center text-[10px] text-neutral-400 animate-[pulse_2.4s_ease-in-out_infinite]">User</div>
+                        <div class="h-10 w-14 rounded-xl border border-neutral-700 bg-neutral-900 flex items-center justify-center text-[10px] text-neutral-400 animate-[pulse_3s_ease-in-out_infinite]">Calc</div>
+                        <div class="h-10 w-14 rounded-xl border border-neutral-700 bg-neutral-900 flex items-center justify-center text-[10px] text-neutral-400 animate-[pulse_2.7s_ease-in-out_infinite]">Chat</div>
+                        <div class="col-span-3 h-1 w-full bg-gradient-to-r from-sky-400 via-indigo-400 to-emerald-400 opacity-70 rounded-full animate-[pulse_2.2s_ease-in-out_infinite]"></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="flex-1 space-y-3 mb-5">
+                    <p class="text-sm text-neutral-300">AI math tutor trained on Iowa State University’s mathematics curriculum to help students work through problems.</p>
+                    <p class="text-sm text-neutral-400">Built with Botpress and integrated into the Calcly web app. Guides students through calculus and linear algebra with step-by-step explanations.</p>
+                  </div>
+                  <div class="pt-4 border-t border-neutral-800/60">
+                    <a href="https://brianccwork.github.io/Calcly/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 text-sm text-sky-400 hover:text-sky-300">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z"/><path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z"/></svg>
+                      Launch
+                    </a>
+                  </div>
+                </div>
+              </article>
 
-          <div class="flex flex-col items-center gap-6">
-            <p
-              class="text-sm sm:text-base text-neutral-300 text-center max-w-md"
-            >
-              Reach out if you want to talk about opportunities, projects, or
-              anything software/AI related.
-            </p>
-
-            <div class="flex items-center justify-center gap-8 sm:gap-10">
-              <!-- Email -->
-              <a
-                href="mailto:mikeypro24@gmail.com"
-                class="group inline-flex flex-col items-center gap-2"
-                aria-label="Email"
-              >
-                <span
-                  class="flex h-12 w-12 items-center justify-center rounded-full border border-neutral-700 group-hover:border-white transition-colors"
-                >
-                  <!-- Mail icon -->
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="h-6 w-6 text-neutral-300 group-hover:text-white transition-colors"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    stroke-width="1.5"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      d="M3.75 5.25h16.5a.75.75 0 0 1 .75.75v12a.75.75 0 0 1-.75.75H3.75a.75.75 0 0 1-.75-.75v-12a.75.75 0 0 1 .75-.75z"
-                    />
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      d="m4.5 6.75 7.5 5.25 7.5-5.25"
-                    />
-                  </svg>
-                </span>
-                <span
-                  class="text-xs text-neutral-400 group-hover:text-white transition-colors"
-                >
-                  Email
-                </span>
-              </a>
-
-              <!-- LinkedIn -->
-              <a
-                href="https://www.linkedin.com/in/michael-proeschel/"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="group inline-flex flex-col items-center gap-2"
-                aria-label="LinkedIn"
-              >
-                <span
-                  class="flex h-12 w-12 items-center justify-center rounded-full border border-neutral-700 group-hover:border-white transition-colors"
-                >
-                  <span
-                    class="text-sm font-semibold tracking-wide text-neutral-300 group-hover:text-white transition-colors"
-                  >
-                    in
-                  </span>
-                </span>
-                <span
-                  class="text-xs text-neutral-400 group-hover:text-white transition-colors"
-                >
-                  LinkedIn
-                </span>
-              </a>
-
-              <!-- GitHub -->
-              <a
-                href="https://github.com/mikeyy2"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="group inline-flex flex-col items-center gap-2"
-                aria-label="GitHub"
-              >
-                <span
-                  class="flex h-12 w-12 items-center justify-center rounded-full border border-neutral-700 group-hover:border-white transition-colors"
-                >
-                  <!-- GitHub icon -->
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="h-6 w-6 text-neutral-300 group-hover:text-white transition-colors"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                  >
-                    <path
-                      fill-rule="evenodd"
-                      d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483
-                       0-.237-.009-.868-.013-1.703-2.782.604-3.369-1.341-3.369-1.341-.454-1.155-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608
-                       1.004.07 1.533 1.032 1.533 1.032.892 1.53 2.341 1.088 2.91.832.091-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951
-                       0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844
-                       a9.56 9.56 0 0 1 2.504.337c1.909-1.296 2.748-1.026 2.748-1.026.546 1.378.203 2.397.1 2.65.64.7 1.027 1.595 1.027 2.688
-                       0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.748
-                       0 .268.18.58.688.482A10.019 10.019 0 0 0 22 12.017C22 6.484 17.523 2 12 2z"
-                      clip-rule="evenodd"
-                    />
-                  </svg>
-                </span>
-                <span
-                  class="text-xs text-neutral-400 group-hover:text-white transition-colors"
-                >
-                  GitHub
-                </span>
-              </a>
-            </div>
           </div>
         </section>
 
         <!-- EXPERIENCE PANEL -->
-        <section id="tab-experience" class="tab-panel hidden space-y-6">
-          <h2
-            class="text-sm font-semibold tracking-[0.2em] uppercase text-neutral-400"
-          >
-            Experience
-          </h2>
+        <section id="tab-experience" class="tab-panel" style="display:none">
+          <div class="tl-wrap">
 
-          <div class="grid grid-cols-1 gap-5">
             <!-- RSM -->
-            <a
-              href="https://rsmus.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="group block focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400/70 rounded-3xl"
-            >
-              <article
-                class="experience-card group relative overflow-hidden border border-neutral-800 rounded-3xl p-4 sm:p-6 bg-neutral-950/80 transition-transform duration-300 ease-out hover:-translate-y-1 hover:border-neutral-600 hover:bg-neutral-900/90"
-              >
-                <div
-                  class="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                >
-                  <div
-                    class="absolute -inset-20 bg-[radial-gradient(circle_at_top,_rgba(96,165,250,0.18),_transparent_60%)]"
-                  ></div>
-                </div>
-
-                <div class="relative flex items-center justify-between mb-4">
-                  <div>
-                    <p
-                      class="text-[11px] uppercase tracking-[0.18em] text-neutral-500"
-                    >
-                      RSM
-                    </p>
-                    <p class="text-xs text-neutral-400">
-                      Incoming Application Development Intern
-                    </p>
-                  </div>
-                  <span
-                    class="text-[10px] px-2 py-0.5 rounded-full border border-neutral-700 text-neutral-400"
-                  >
-                    Summer 2026
-                  </span>
-                </div>
-
-                <!-- “pipeline” visual -->
-                <div
-                  class="relative h-32 sm:h-36 mb-4 rounded-2xl border border-neutral-800 bg-neutral-950/80 overflow-hidden"
-                >
-                  <div class="absolute inset-0 px-4 py-4 flex flex-col gap-3">
-                    <!-- environments row -->
-                    <div class="flex gap-2 text-[10px]">
-                      <div
-                        class="flex-1 h-8 rounded-xl bg-neutral-900 border border-neutral-800 flex items-center justify-between px-3"
-                      >
-                        <span
-                          class="text-neutral-500 uppercase tracking-[0.18em]"
-                          >Dev</span
-                        >
-                        <span
-                          class="inline-flex items-center gap-1 text-emerald-400"
-                        >
-                          ● <span>Passing</span>
-                        </span>
-                      </div>
-                      <div
-                        class="flex-1 h-8 rounded-xl bg-neutral-900 border border-neutral-800 flex items-center justify-between px-3"
-                      >
-                        <span
-                          class="text-neutral-500 uppercase tracking-[0.18em]"
-                          >QA</span
-                        >
-                        <span
-                          class="inline-flex items-center gap-1 text-sky-400"
-                        >
-                          ● <span>Running</span>
-                        </span>
-                      </div>
-                      <div
-                        class="flex-1 h-8 rounded-xl bg-neutral-900 border border-neutral-800 flex items-center justify-between px-3"
-                      >
-                        <span
-                          class="text-neutral-500 uppercase tracking-[0.18em]"
-                          >Prod</span
-                        >
-                        <span
-                          class="inline-flex items-center gap-1 text-amber-300"
-                        >
-                          ● <span>Stable</span>
-                        </span>
-                      </div>
-                    </div>
-
-                    <!-- moving “ticket” -->
-                    <div
-                      class="relative flex-1 rounded-xl bg-neutral-900 border border-neutral-800 overflow-hidden"
-                    >
-                      <div
-                        class="absolute inset-y-0 left-0 w-full bg-[linear-gradient(to_right,rgba(148,163,184,0.12)_1px,transparent_1px)] bg-[size:20px_100%] opacity-60"
-                      ></div>
-
-                      <div class="relative h-full flex items-center px-3">
-                        <div
-                          class="ticket-pill flex items-center gap-2 rounded-full border border-neutral-700 bg-neutral-950 px-3 py-1 text-[10px] text-neutral-200"
-                        >
-                          <span
-                            class="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-[pulse_1.8s_ease-in-out_infinite]"
-                          ></span>
-                          <span>Feature: Client dashboard</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <p class="relative text-xs text-neutral-300">
-                  Joining RSM to ship production-grade features in a consulting
-                  environment.
-                </p>
-              </article>
-            </a>
+            <div class="tl-entry">
+              <div class="tl-dot tl-dot-sky"><div class="tl-dot-inner"></div></div>
+              <div class="flex flex-wrap items-center gap-2 mb-2">
+                <a href="https://rsmus.com/" target="_blank" rel="noopener noreferrer" class="text-xs uppercase tracking-widest text-neutral-400 hover:text-white transition-colors">RSM</a>
+                <span class="text-xs px-2 py-0.5 rounded-full border border-neutral-800 text-neutral-500">Summer 2026</span>
+              </div>
+              <p class="text-sm font-semibold text-white mb-1 text-left">Incoming Application Development Intern</p>
+              <p class="text-xs text-neutral-400 leading-relaxed text-left">Joining RSM to ship production-grade features in a consulting environment.</p>
+            </div>
 
             <!-- Drew’s Mobile Detailing -->
-            <a
-              href="https://drewsmobiledetailing.co/"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="group block focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400/70 rounded-3xl"
-            >
-              <article
-                class="experience-card group relative overflow-hidden border border-neutral-800 rounded-3xl p-4 sm:p-6 bg-neutral-950/80 transition-transform duration-300 ease-out hover:-translate-y-1 hover:border-neutral-600 hover:bg-neutral-900/90"
-              >
-                <!-- subtle emerald glow on hover -->
-                <div
-                  class="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                >
-                  <div
-                    class="absolute -inset-20 bg-[radial-gradient(circle_at_top,_rgba(52,211,153,0.18),_transparent_60%)]"
-                  ></div>
-                </div>
+            <div class="tl-entry">
+              <div class="tl-dot tl-dot-green"><div class="tl-dot-inner"></div></div>
+              <div class="flex flex-wrap items-center gap-2 mb-2">
+                <a href="https://drewsmobiledetailing.co/" target="_blank" rel="noopener noreferrer" class="text-xs uppercase tracking-widest text-neutral-400 hover:text-white transition-colors">Drew’s Mobile Detailing</a>
+                <span class="text-xs px-2 py-0.5 rounded-full border border-neutral-800 text-neutral-500">2024</span>
+              </div>
+              <p class="text-sm font-semibold text-white mb-1 text-left">Web Developer</p>
+              <p class="text-xs text-neutral-400 leading-relaxed text-left">Built a mobile-first scheduling and marketing site so customers can browse services, check availability, and book detailing appointments online.</p>
+            </div>
 
-                <div class="relative flex items-center justify-between mb-4">
-                  <div>
-                    <p
-                      class="text-[11px] uppercase tracking-[0.18em] text-neutral-500"
-                    >
-                      Drew’s Mobile Detailing
-                    </p>
-                    <p class="text-xs text-neutral-400">
-                      Web Developer · Scheduling & marketing site
-                    </p>
-                  </div>
-                  <span
-                    class="text-[10px] px-2 py-0.5 rounded-full border border-neutral-700 text-neutral-400"
-                  >
-                    2024
-                  </span>
-                </div>
+            <!-- Biltmore Country Club -->
+            <div class="tl-entry">
+              <div class="tl-dot tl-dot-gray"><div class="tl-dot-inner"></div></div>
+              <div class="flex flex-wrap items-center gap-2 mb-2">
+                <a href="https://www.biltmore-cc.com/" target="_blank" rel="noopener noreferrer" class="text-xs uppercase tracking-widest text-neutral-400 hover:text-white transition-colors">Biltmore Country Club</a>
+                <span class="text-xs px-2 py-0.5 rounded-full border border-neutral-800 text-neutral-500">2017 – Present</span>
+              </div>
+              <p class="text-sm font-semibold text-white mb-1 text-left">Caddie · Barrington, IL</p>
+              <p class="text-xs text-neutral-400 leading-relaxed text-left">On-course caddie for member and tournament rounds, building long-term relationships and situational awareness under pressure.</p>
+            </div>
 
-                <!-- scheduling visual (static) -->
-                <div
-                  class="relative h-32 sm:h-36 mb-4 rounded-2xl border border-neutral-800 bg-neutral-950/80 overflow-hidden"
-                >
-                  <div class="absolute inset-0 px-4 py-3 flex flex-col gap-3">
-                    <!-- top row: today + slots -->
-                    <div class="flex items-center justify-between text-[10px]">
-                      <div
-                        class="dmd-today-pill inline-flex items-center gap-2 rounded-full border border-neutral-700 bg-neutral-900/90 px-3 py-1"
-                      >
-                        <span
-                          class="h-1.5 w-1.5 rounded-full bg-emerald-400"
-                        ></span>
-                        <span class="dmd-today-text text-white text-[10px]"
-                          >Today · Friday</span
-                        >
-                      </div>
-                      <span class="text-neutral-400">7 bookings</span>
-                    </div>
-
-                    <!-- mini week strip -->
-                    <div class="flex gap-1 text-[9px]">
-                      <div class="dmd-day flex-1">Mon</div>
-                      <div class="dmd-day flex-1">Tue</div>
-                      <div class="dmd-day flex-1">Wed</div>
-                      <div class="dmd-day flex-1">Thu</div>
-                      <div class="dmd-day dmd-day-active flex-1">Fri</div>
-                      <div class="dmd-day flex-1 hidden sm:flex">Sat</div>
-                      <div class="dmd-day flex-1 hidden sm:flex">Sun</div>
-                    </div>
-
-                    <!-- upcoming bookings list -->
-                    <div
-                      class="flex-1 mt-1 rounded-xl bg-neutral-900 border border-neutral-800 px-3 py-2 text-[10px] text-neutral-300"
-                    >
-                      <div class="flex items-center justify-between mb-1.5">
-                        <div class="flex items-center gap-2">
-                          <span
-                            class="h-1.5 w-1.5 rounded-full bg-emerald-400"
-                          ></span>
-                          <span>9:00 AM · Exterior wash</span>
-                        </div>
-                        <span
-                          class="px-2 py-0.5 rounded-full border border-neutral-700 text-[9px] text-neutral-400"
-                        >
-                          Confirmed
-                        </span>
-                      </div>
-                      <div class="flex items-center justify-between mb-1.5">
-                        <div class="flex items-center gap-2">
-                          <span
-                            class="h-1.5 w-1.5 rounded-full bg-emerald-400"
-                          ></span>
-                          <span>11:30 AM · Full detail</span>
-                        </div>
-                        <span
-                          class="px-2 py-0.5 rounded-full border border-neutral-700 text-[9px] text-neutral-400"
-                        >
-                          Confirmed
-                        </span>
-                      </div>
-                      <div class="flex items-center justify-between">
-                        <div class="flex items-center gap-2">
-                          <span
-                            class="h-1.5 w-1.5 rounded-full bg-amber-400"
-                          ></span>
-                          <span>3:15 PM · Interior clean</span>
-                        </div>
-                        <span
-                          class="px-2 py-0.5 rounded-full border border-neutral-700 text-[9px] text-neutral-400"
-                        >
-                          Pending
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <p class="relative text-xs text-neutral-300">
-                  Built a mobile-first site so customers can browse services,
-                  check availability, and book detailing appointments online.
-                </p>
-              </article>
-            </a>
-            <!-- Caddie – animated golf card -->
-            <a
-              href="https://www.biltmore-cc.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="group block focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400/70 rounded-3xl"
-            >
-              <article
-                class="group relative overflow-hidden border border-neutral-800 rounded-3xl p-4 sm:p-6 bg-neutral-950/80 transition-transform duration-300 ease-out hover:-translate-y-1 hover:border-neutral-600 hover:bg-neutral-900/90"
-              >
-                <!-- subtle glow -->
-                <div
-                  class="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                >
-                  <div
-                    class="absolute -inset-20 bg-[radial-gradient(circle_at_top,_rgba(52,211,153,0.22),_transparent_60%)]"
-                  ></div>
-                </div>
-
-                <!-- header (match RSM structure) -->
-                <div class="relative flex items-center justify-between mb-4">
-                  <div>
-                    <p
-                      class="text-[11px] uppercase tracking-[0.18em] text-neutral-500"
-                    >
-                      Biltmore Country Club
-                    </p>
-                    <p class="text-xs text-neutral-400">
-                      Caddie · Barrington, IL
-                    </p>
-                  </div>
-                  <span
-                    class="text-[10px] px-2 py-0.5 rounded-full border border-neutral-700 text-neutral-400"
-                  >
-                    2017 – Present
-                  </span>
-                </div>
-
-                <!-- mini golf course visual (unchanged) -->
-                <div
-                  class="caddie-course relative mb-4 h-28 sm:h-32 rounded-2xl border border-neutral-800 bg-gradient-to-t from-emerald-900/60 via-neutral-950 to-neutral-950 overflow-hidden"
-                >
-                  <!-- fairway -->
-                  <div
-                    class="absolute inset-x-3 bottom-4 h-8 rounded-full bg-gradient-to-r from-emerald-600/80 via-emerald-500/80 to-emerald-600/80 blur-[1px]"
-                  ></div>
-
-                  <!-- “distance” meter -->
-                  <div
-                    class="absolute left-3 top-3 right-3 h-1 rounded-full bg-neutral-800 overflow-hidden"
-                  >
-                    <div
-                      class="caddie-distance h-full rounded-full bg-gradient-to-r from-emerald-400 via-yellow-300 to-red-400"
-                    ></div>
-                  </div>
-
-                  <!-- hole + flag -->
-                  <div class="absolute right-8 bottom-7 h-14 w-8">
-                    <!-- cup -->
-                    <div
-                      class="absolute bottom-0 left-1/2 -translate-x-1/2 h-3 w-6 rounded-full bg-black/80"
-                    ></div>
-
-                    <!-- pin -->
-                    <div
-                      class="absolute bottom-2 left-1/2 -translate-x-1/2 h-8 w-[2px] bg-neutral-100/80"
-                    ></div>
-
-                    <!-- flag -->
-                    <div
-                      class="caddie-flag absolute bottom-8 left-1/2 -translate-x-[2px] w-3 h-3 bg-red-500 rounded-[2px]"
-                    ></div>
-                  </div>
-
-                  <!-- golf ball -->
-                  <div
-                    class="caddie-ball absolute left-5 bottom-7 h-3 w-3 rounded-full bg-white shadow-[0_0_6px_rgba(255,255,255,0.9)]"
-                  ></div>
-                  <!-- subtle ball shadow -->
-                  <div
-                    class="caddie-ball-shadow absolute left-5 bottom-6 h-2 w-4 rounded-full bg-black/40 blur-[3px]"
-                  ></div>
-                </div>
-
-                <!-- copy (same size/feel as RSM) -->
-                <p class="relative text-xs text-neutral-300">
-                  On-course caddie for member and tournament rounds, building
-                  long-term relationships and situational awareness under
-                  pressure.
-                </p>
-              </article>
-            </a>
           </div>
         </section>
       </div>
@@ -1256,11 +760,7 @@
           btn.classList.remove("text-neutral-300");
 
           tabPanels.forEach((panel) => {
-            if (panel.id === targetId) {
-              panel.classList.remove("hidden");
-            } else {
-              panel.classList.add("hidden");
-            }
+            panel.style.display = panel.id === targetId ? "block" : "none";
           });
         });
       });
@@ -1283,6 +783,115 @@
       });
 
       updateThemeIcon();
+
+      // Typewriter
+      (async () => {
+        const el     = document.getElementById("typewriter");
+        const cursor = document.getElementById("tw-cursor");
+        const wait   = ms => new Promise(r => setTimeout(r, ms));
+
+        const type = async (text, speed = 72) => {
+          for (const ch of text) { el.textContent += ch; await wait(speed); }
+        };
+        const erase = async (count, speed = 45) => {
+          for (let i = 0; i < count; i++) {
+            el.textContent = el.textContent.slice(0, -1);
+            await wait(speed);
+          }
+        };
+
+        await wait(300);
+        await type("Hi, I'm Mikey");
+        await wait(700);
+        await erase(5);          // remove "Mikey"
+        await wait(180);
+        await type("Michael Proeschel");
+        cursor.classList.add("done");
+
+        // ── Pointer + context menu paste ──────────────────────────────
+        const bioEl   = document.getElementById("bio-text");
+        const bioText = "I am a Software Engineering student at Iowa State University with an Applied AI minor. In my free time you can find me on the course or in the gym. Check out what I have done below and feel free to reach out!";
+
+        // Build fake pointer SVG
+        const ptr = document.createElement("div");
+        ptr.id = "fake-ptr";
+        ptr.innerHTML = `<svg viewBox="0 0 14 22" width="18" height="28" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0 0L0 18L4 13L6.5 20L9 19L6.5 12L12 12Z"
+            fill="white" stroke="#1a1a1a" stroke-width="1.2" stroke-linejoin="round"/>
+        </svg>`;
+        document.body.appendChild(ptr);
+
+        // Build fake context menu
+        const ctx = document.createElement("div");
+        ctx.className = "fake-ctx";
+        ctx.innerHTML = `
+          <div class="ctx-row dim">Undo <span>⌘Z</span></div>
+          <div class="ctx-divider"></div>
+          <div class="ctx-row dim">Cut <span>⌘X</span></div>
+          <div class="ctx-row dim">Copy <span>⌘C</span></div>
+          <div class="ctx-row" id="ctx-paste-row">Paste <span>⌘V</span></div>
+          <div class="ctx-divider"></div>
+          <div class="ctx-row dim">Select All <span>⌘A</span></div>`;
+        document.body.appendChild(ctx);
+
+        const moveTo = (x, y) => { ptr.style.left = x + "px"; ptr.style.top = y + "px"; };
+
+        // Get target: bio paragraph position
+        const bioRect = bioEl.parentElement.getBoundingClientRect();
+        const destX   = bioRect.left + 18;
+        const destY   = bioRect.top  + 10;
+
+        // Start from right edge, same height
+        moveTo(window.innerWidth * 0.72, destY - 40);
+        await wait(350);
+        ptr.style.opacity = "1";
+        await wait(80);
+
+        // Glide to bio area
+        moveTo(destX, destY);
+        await wait(620);
+
+        // Right-click flash
+        ptr.classList.add("click-anim");
+        await wait(90);
+        ptr.classList.remove("click-anim");
+        ptr.style.transition = "opacity 0.15s ease, left 0.3s cubic-bezier(.4,0,.2,1), top 0.3s cubic-bezier(.4,0,.2,1)";
+
+        // Show context menu
+        ctx.style.left = (destX + 6)  + "px";
+        ctx.style.top  = (destY + 8)  + "px";
+        await wait(60);
+        ctx.classList.add("open");
+        await wait(420);
+
+        // Move to Paste row
+        const pasteRow  = document.getElementById("ctx-paste-row");
+        const pasteRect = pasteRow.getBoundingClientRect();
+        moveTo(pasteRect.left + 16, pasteRect.top + 7);
+        await wait(380);
+
+        // Highlight Paste
+        pasteRow.classList.add("hi");
+        await wait(260);
+
+        // Click
+        ptr.classList.add("click-anim");
+        await wait(90);
+        ptr.classList.remove("click-anim");
+
+        // Dismiss menu & paste text
+        ctx.style.opacity = "0";
+        ctx.style.transform = "scale(0.94)";
+        await wait(140);
+        ctx.remove();
+        bioEl.innerText = bioText;
+
+        // Drift cursor away and fade
+        moveTo(destX + 60, destY + 40);
+        ptr.style.opacity = "0";
+        await wait(550);
+        ptr.remove();
+      })();
 
       // Footer year
       document.getElementById("year").textContent = new Date().getFullYear();
